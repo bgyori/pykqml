@@ -17,4 +17,4 @@ PyKQML can be installed as
 
 You can import KQML classes as, for instance,
 
-    from kqml install KQMLList
+    from kqml import KQMLList
