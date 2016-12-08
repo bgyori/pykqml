@@ -24,7 +24,7 @@ You can create a new KQML messaging agent as
 
 ```python
 from kqml import KQMLModule
-    
+
 class MyAgent(KQMLModule):
     def __init__(self, argv):
         # Initialize the agent
@@ -33,8 +33,7 @@ class MyAgent(KQMLModule):
         super(MyAgent, self).start()
 
     def receive_request(self, msg, content):
-        # Handle request and onstruct a reply_msg
+        # Handle request and construct a reply_msg
         # ...
         self.reply(msg, reply_msg)
 ```
-        
