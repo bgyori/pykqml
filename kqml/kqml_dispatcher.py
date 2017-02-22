@@ -1,5 +1,7 @@
 import logging
 
+logger = logging.getLogger('KQMLDispatcher')
+
 class KQMLDispatcher(object):
     def __init__(self, rec, inp, agent_name):
         super(KQMLDispatcher, self).__init__()

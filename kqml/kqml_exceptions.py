@@ -19,6 +19,9 @@ class KQMLBadOpenException(KQMLException):
 class KQMLBadPerformativeException(KQMLException):
     pass
 
+class KQMLBadCommandException(KQMLException):
+    pass
+
 class KQMLExpectedListException(KQMLException):
     pass
 

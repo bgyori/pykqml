@@ -66,8 +66,8 @@ class KQMLReader(object):
         elif ch == '(':
             return self.read_list(backquoted)
         elif ch == ',':
-            if not backqouted:
-                ch = read_char()
+            if not backquoted:
+                ch = self.read_char()
                 raise KQMLBadCommandException(self.inbuf)
             else:
                 self.read_quotation(backquoted)

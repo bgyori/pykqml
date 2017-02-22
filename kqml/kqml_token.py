@@ -1,5 +1,7 @@
 import StringIO
 
+KEYWORD_PACKAGE_NAME = 'KEYWORD'
+
 class KQMLToken(object):
     def __init__(self, s=None):
         if s is None:
@@ -45,8 +47,6 @@ class KQMLToken(object):
     def get_name(self):
         results = self.parse_package()
         return results[1]
-
-    KEYWORD_PACKAGE_NAME = 'KEYWORD'
 
     def is_keyword(self):
         package_name = self.get_package()
