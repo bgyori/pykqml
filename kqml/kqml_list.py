@@ -4,11 +4,11 @@ import kqml_reader
 
 class KQMLList(object):
     def __init__(self, objects=None):
+        self.data = []
         if objects is None:
-            self.data = []
-        else:
-            for o in objects:
-                self.data.append(o)
+            objects = []
+        for o in objects:
+            self.data.append(o)
 
     def __str__(self):
         return '(' + ' '.join([d.__str__() for d in self.data]) + ')'
@@ -79,7 +79,9 @@ class KQMLList(object):
         kreader = kqml_reader.KQMLReader(sreader)
         return kreader.read_list()
 
-    def sublist(self, from_idx, to_idx):
+    def sublist(self, from_idx, to_idx=None):
+        if to_idx is None:
+            to_idx = len(self)
         return KQMLList(self.data[from_idx:to_idx])
 
     def remove(self, obj):
