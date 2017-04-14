@@ -81,14 +81,10 @@ class KQMLReader(object):
     def read_token(self):
         buf = ''
         done = False
-        in_pipes = False
         can_peek = isinstance(self.reader, io.BufferedReader)
         while not done:
             ch = self.peek_char()
-            if ch == '|':
-                in_pipes = not in_pipes
-                self.read_char()
-            if in_pipes or self.is_token_char(ch):
+            if self.is_token_char(ch):
                 buf += ch
                 self.read_char()
             else:
