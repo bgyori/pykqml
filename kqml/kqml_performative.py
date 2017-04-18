@@ -2,9 +2,10 @@ import StringIO
 import kqml_reader
 import kqml_list
 from kqml_token import KQMLToken
+from kqml_string import KQMLString
 from kqml_exceptions import KQMLBadPerformativeException
 
-class KQMLPerformative(object):
+class KQMLPerformative(kqml_list.KQMLList):
     def __init__(self, verb):
         if not isinstance(verb, kqml_list.KQMLList):
             self.data = kqml_list.KQMLList()
@@ -19,8 +20,7 @@ class KQMLPerformative(object):
             else:
                 i = 1
                 while i < length:
-                    if not isinstance(verb[i], KQMLToken) or \
-                        verb[i][0] != ':':
+                    if not isinstance(verb[i], KQMLToken) or verb[i][0] != ':':
                         raise KQMLBadPerformativeException('performative ' + \
                             'element not a keyword: ' + verb[i])
                     # Increment counter after keyword
@@ -30,33 +30,6 @@ class KQMLPerformative(object):
                             'for keyword: ' + verb[i-1])
                     i += 1
             self.data = verb
-
-    def get_verb(self):
-        return self.data[0].to_string()
-
-    def get_parameter(self, keyword):
-        for i, key in enumerate([d.to_string() for d in self.data[:-1]]):
-            if key.lower() == keyword.lower():
-                return self.data[i+1]
-        return None
-
-    def set_parameter(self, keyword, value):
-        found = False
-        for i, key in enumerate([d.to_string() for d in self.data[:-1]]):
-            if key.lower() == keyword.lower():
-                found = True
-                self.data[i+1] = value
-        if not found:
-            self.data.add(keyword)
-            self.data.add(value)
-
-    def remove_parameter(self, keyword, value):
-        for i, key in enumerate([d.to_string() for d in self.data[:-1]]):
-            if key.lower() == keyword.lower():
-                del self.data[i]
-                del self.data[i]
-                # Here we might want to continue
-                return
 
     def to_list(self):
         return self.data
