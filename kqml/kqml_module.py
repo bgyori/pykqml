@@ -2,12 +2,8 @@ import io
 import sys
 import socket
 import logging
-#import kqml_reader
-from kqml import KQMLReader
-from kqml import KQMLDispatcher
-from kqml import KQMLToken
-from kqml import KQMLList
-from kqml import KQMLPerformative
+from kqml import KQMLReader, KQMLDispatcher
+from kqml import KQMLToken, KQMLString, KQMLList, KQMLPerformative
 
 class KQMLModule(object):
     def __init__(self, argv, is_application=False):
@@ -316,7 +312,7 @@ class KQMLModule(object):
 
     def error_reply(self, msg, comment):
         reply_msg = KQMLPerformative('error')
-        reply_msg.set_parameter(':comment', comment)
+        reply_msg.set_parameter(':comment', KQMLString(comment))
         self.reply(msg, reply_msg)
 
     def error(self, msg):
