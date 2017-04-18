@@ -11,10 +11,10 @@ class KQMLList(object):
         # If a list is passed, the elements are one-by-one added to the list
         if isinstance(objects, list):
             for o in objects:
-                self.data.append(o)
+                self.append(o)
         # If a string is passed, it becomes the "head" of the list
         elif isinstance(objects, basestring):
-            self.data.append(KQMLToken(objects))
+            self.append(objects)
 
     def __str__(self):
         return '(' + ' '.join([d.__str__() for d in self.data]) + ')'
@@ -28,8 +28,7 @@ class KQMLList(object):
     def __len__(self):
         return len(self.data)
 
-    #TODO: implement adding by index, KQMLList line 246
-    def add(self, obj):
+    def append(self, obj):
         if isinstance(obj, basestring):
             self.data.append(KQMLToken(obj))
         else:
@@ -47,7 +46,12 @@ class KQMLList(object):
     def nth(self, n):
         return self.data[n]
 
+    def head(self):
+        return self.data[0].to_string()
+
     def get(self, keyword):
+        if not keyword.startswith(':'):
+            keyword = ':' + keyword
         for i, s in enumerate(self.data):
             if s.to_string().upper() == keyword.upper():
                 if i < len(self.data)-1:
@@ -63,6 +67,8 @@ class KQMLList(object):
         return None
 
     def set(self, keyword, value):
+        if not keyword.startswith(':'):
+            keyword = ':' + keyword
         found = False
         for i, key in enumerate(self.data):
             if key.to_string().lower() == keyword.lower():
@@ -71,14 +77,8 @@ class KQMLList(object):
                     self.data[i+1] = value
                 break
         if not found:
-            self.data.add(keyword)
-            self.data.add(value)
-
-    def remove(self, obj):
-        self.data.remove(obj)
-
-    def remove_keyword_arg(self, keyword):
-        raise Exception('Not implemented')
+            self.data.append(keyword)
+            self.data.append(value)
 
     def write(self, out):
         full_str = '(' + ' '.join([str(s) for s in self.data]) + ')'
