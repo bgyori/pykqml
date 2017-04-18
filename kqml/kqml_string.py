@@ -7,7 +7,7 @@ class KQMLString(object):
         else:
             self.data = data
 
-    def length(self):
+    def __len__(self):
         return len(self.data)
 
     def char_at(self, n):
@@ -22,7 +22,6 @@ class KQMLString(object):
     def write(self, out):
         out.write('"')
         for ch in self.data:
-            #if ch == '"' or ch == '\\':
             if ch == '"':
                 out.write('\\')
             out.write(ch)
@@ -43,3 +42,7 @@ class KQMLString(object):
         s = self.__str__()
         s = s.replace('\n', '\\n')
         return s
+
+    def __getitem__(self, *args):
+        return self.data.__getitem__(*args)
+
