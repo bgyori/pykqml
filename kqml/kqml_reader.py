@@ -3,8 +3,8 @@ import logging
 from kqml_exceptions import *
 
 import kqml_list
+import kqml_performative
 from kqml_token import KQMLToken
-from kqml_performative import KQMLPerformative
 from kqml_string import KQMLString
 
 logger = logging.getLogger('KQMLReader')
@@ -190,6 +190,6 @@ class KQMLReader(object):
         self.inbuf = ''
         expr = self.read_expr()
         if isinstance(expr, kqml_list.KQMLList):
-            return KQMLPerformative(expr)
+            return kqml_performative.KQMLPerformative(expr)
         else:
             raise KQMLExpectedListException(self.inbuf)
