@@ -1,3 +1,4 @@
+import logging
 from kqml_exceptions import *
 from kqml_token import KQMLToken
 from kqml_string import KQMLString
@@ -6,3 +7,6 @@ from kqml_performative import KQMLPerformative
 from kqml_reader import KQMLReader
 from kqml_dispatcher import KQMLDispatcher
 from kqml_module import KQMLModule
+
+logging.basicConfig(format='%(levelname)s: %(modulename)s/%(name)s - %(message)s',
+                    level=logging.INFO)
