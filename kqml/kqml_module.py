@@ -126,14 +126,14 @@ class KQMLModule(object):
     def register(self):
         if self.name is not None:
             perf = KQMLPerformative('register')
-            perf.set_parameter(':name', self.name)
+            perf.set('name', self.name)
             if self.group_name is not None:
                 try:
                     if self.group_name.startswith('('):
                         group = KQMLList.fromString(self.group_name)
                     else:
                         group = KQMLToken(self.group_name)
-                    perf.set_parameter(':group', group)
+                    perf.set('group', group)
                 except IOError:
                     self.logger.error('bad group name: ' + self.group_name)
             self.send(perf)
@@ -143,7 +143,7 @@ class KQMLModule(object):
         content = KQMLList()
         content.add('module-status')
         content.add('ready')
-        perf.set_parameter(':content', content)
+        perf.set('content', content)
         self.send(perf)
 
     def exit(self, n):
@@ -302,17 +302,17 @@ class KQMLModule(object):
         self.send(msg)
 
     def reply(self, msg, reply_msg):
-        sender = msg.get_parameter(':sender')
+        sender = msg.get('sender')
         if sender is not None:
-            reply_msg.set_parameter(':receiver', sender)
-        reply_with = msg.get_parameter(':reply-with')
+            reply_msg.set('receiver', sender)
+        reply_with = msg.get('reply-with')
         if reply_with is not None:
-            reply_msg.set_parameter(':in-reply-to', reply_with)
+            reply_msg.set('in-reply-to', reply_with)
         self.send(reply_msg)
 
     def error_reply(self, msg, comment):
         reply_msg = KQMLPerformative('error')
-        reply_msg.set_parameter(':comment', KQMLString(comment))
+        reply_msg.set('comment', KQMLString(comment))
         self.reply(msg, reply_msg)
 
     def error(self, msg):
