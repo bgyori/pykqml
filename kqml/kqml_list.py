@@ -64,7 +64,7 @@ class KQMLList(object):
     def gets(self, keyword):
         param = self.get(keyword)
         if param:
-            return param.to_string()
+            return param.string_value()
         return None
 
     def set(self, keyword, value):
