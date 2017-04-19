@@ -29,28 +29,35 @@ class KQMLList(object):
     def __len__(self):
         return len(self.data)
 
-    def append(self, obj):
-        if isinstance(obj, basestring):
-            self.data.append(KQMLToken(obj))
-        else:
-            self.data.append(obj)
-
-    def push(self, obj):
-        self.data.insert(0, obj)
-
-    def insert_at(self, index, obj):
-        self.data.insert(index, obj)
-
-    def remove_at(self, index):
-        del self.data[index]
-
-    def nth(self, n):
-        return self.data[n]
-
     def head(self):
+        """Return the first element of the list as string.
+
+        Example:
+            kl = KQMLList.from_string('(FAILURE :reason INVALID_PARAMETER)')
+            kl.head() # "FAILURE"
+        """
         return self.data[0].to_string()
 
     def get(self, keyword):
+        """Return the element of the list after the given keyword.
+
+        Parameters
+        ----------
+        keyword : str
+            The keyword parameter to find in the list.
+            Putting a colon before the keyword is optional, if no colon is
+            given, it is added automatically (e.g. "keyword" will be found as
+            ":keyword" in the list).
+
+        Returns
+        -------
+        obj : KQML object
+            The object corresponding to the keyword parameter
+
+        Example:
+            kl = KQMLList.from_string('(FAILURE :reason INVALID_PARAMETER)')
+            kl.get('reason') # KQMLToken('INVALID_PARAMETER')
+        """
         if not keyword.startswith(':'):
             keyword = ':' + keyword
         for i, s in enumerate(self.data):
@@ -62,12 +69,98 @@ class KQMLList(object):
         return None
 
     def gets(self, keyword):
+        """Return the element of the list after the given keyword as string.
+
+        Parameters
+        ----------
+        keyword : str
+            The keyword parameter to find in the list.
+            Putting a colon before the keyword is optional, if no colon is
+            given, it is added automatically (e.g. "keyword" will be found as
+            ":keyword" in the list).
+
+        Returns
+        -------
+        obj_str : str
+            The string value corresponding to the keyword parameter
+
+        Example:
+            kl = KQMLList.from_string('(FAILURE :reason INVALID_PARAMETER)')
+            kl.gets('reason') # 'INVALID_PARAMETER'
+        """
         param = self.get(keyword)
         if param:
             return param.string_value()
         return None
 
+
+    def append(self, obj):
+        """Append an element to the end of the list.
+
+        Parameters
+        ----------
+        obj : KQML object or str
+            If a string is passed, it is instantiated as a
+            KQMLToken before being added to the list.
+        """
+        if isinstance(obj, basestring):
+            obj = KQMLToken(obj)
+        self.data.append(obj)
+
+    def push(self, obj):
+        """Prepend an element to the beginnging of the list.
+
+        Parameters
+        ----------
+        obj : KQML object or str
+            If a string is passed, it is instantiated as a
+            KQMLToken before being added to the list.
+        """
+        if isinstance(obj, basestring):
+            obj = KQMLToken(obj)
+        self.data.insert(0, obj)
+
+    def insert_at(self, index, obj):
+        """Add an element to list at a given position.
+
+        Parameters
+        ----------
+        obj : KQML object or str
+            If a string is passed, it is instantiated as a
+            KQMLToken before being added to the list.
+        index : int
+            The index to insert the element at
+        """
+        self.data.insert(index, obj)
+
+    def remove_at(self, index):
+        """Delete the element of the list at the given position.
+
+        Parameters
+        ----------
+        index : int
+            The position to remove the element at.
+        """
+        del self.data[index]
+
     def set(self, keyword, value):
+        """Set the element of the list after the given keyword.
+
+        Parameters
+        ----------
+        keyword : str
+            The keyword parameter to find in the list.
+            Putting a colon before the keyword is optional, if no colon is
+            given, it is added automatically (e.g. "keyword" will be found as
+            ":keyword" in the list).
+
+        value : KQML object or str
+            If the value is given as str, it is instantiated as a KQMLToken
+
+        Example:
+            kl = KQMLList.from_string('(FAILURE)')
+            kl.set('reason', 'INVALID_PARAMETER')
+        """
         if not keyword.startswith(':'):
             keyword = ':' + keyword
         if isinstance(value, basestring):
@@ -86,6 +179,23 @@ class KQMLList(object):
             self.data.append(value)
 
     def sets(self, keyword, value):
+        """Set the element of the list after the given keyword as string.
+
+        Parameters
+        ----------
+        keyword : str
+            The keyword parameter to find in the list.
+            Putting a colon before the keyword is optional, if no colon is
+            given, it is added automatically (e.g. "keyword" will be found as
+            ":keyword" in the list).
+
+        value : str
+            The value is instantiated as KQMLString and added to the list.
+
+        Example:
+            kl = KQMLList.from_string('(FAILURE)')
+            kl.sets('reason', 'this is a custom string message, not a token')
+        """
         if isinstance(value, basestring):
             value = KQMLString(value)
         self.set(keyword, value)
@@ -126,7 +236,6 @@ class KQMLList(object):
                 return i
         return -1
 
-    # TODO: check if java indexOf return values are consistent
     def index_of_string(self, s):
         try:
             idx = self.data.index(s)
@@ -134,5 +243,3 @@ class KQMLList(object):
         except ValueError:
             return -1
 
-
-    #TODO: didn't implement all the functions here
