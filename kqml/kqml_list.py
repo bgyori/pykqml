@@ -1,5 +1,6 @@
 import StringIO
 from kqml_token import KQMLToken
+from kqml_string import KQMLString
 import kqml_reader
 
 class KQMLList(object):
@@ -71,6 +72,8 @@ class KQMLList(object):
             keyword = ':' + keyword
         if isinstance(value, basestring):
             value = KQMLToken(value)
+        if isinstance(keyword, basestring):
+            keyword = KQMLToken(keyword)
         found = False
         for i, key in enumerate(self.data):
             if key.to_string().lower() == keyword.lower():

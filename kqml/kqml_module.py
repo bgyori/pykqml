@@ -25,7 +25,7 @@ class KQMLModule(object):
         self.dispatcher = None
         self.warning_enabled = True
         self.debugging_enabled = False
-        self.logger = logging.getLogger('TripsModule')
+        self.logger = logging.getLogger('KQMLModule')
         self.init()
 
     def start(self):
@@ -140,9 +140,7 @@ class KQMLModule(object):
 
     def ready(self):
         perf = KQMLPerformative('tell')
-        content = KQMLList()
-        content.append('module-status')
-        content.append('ready')
+        content = KQMLList(['module-status', 'ready'])
         perf.set('content', content)
         self.send(perf)
 
