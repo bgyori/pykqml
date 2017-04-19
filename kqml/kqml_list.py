@@ -1,14 +1,21 @@
 import StringIO
 from kqml_token import KQMLToken
+from kqml_string import KQMLString
 import kqml_reader
 
 class KQMLList(object):
     def __init__(self, objects=None):
         self.data = []
+        # If no objects are passed, we start with an empty list
         if objects is None:
             objects = []
-        for o in objects:
-            self.data.append(o)
+        # If a list is passed, the elements are one-by-one added to the list
+        if isinstance(objects, list):
+            for o in objects:
+                self.append(o)
+        # If a string is passed, it becomes the "head" of the list
+        elif isinstance(objects, basestring):
+            self.append(objects)
 
     def __str__(self):
         return '(' + ' '.join([d.__str__() for d in self.data]) + ')'
@@ -22,25 +29,16 @@ class KQMLList(object):
     def __len__(self):
         return len(self.data)
 
-    #TODO: implement adding by index, KQMLList line 246
-    def add(self, obj):
+    def append(self, obj):
         if isinstance(obj, basestring):
             self.data.append(KQMLToken(obj))
         else:
             self.data.append(obj)
 
-    # TODO: check if java indexOf return values are consistent
-    def index_of_string(self, s):
-        try:
-            idx = self.data.index(s)
-            return idx
-        except ValueError:
-            return -1
-
     def push(self, obj):
         self.data.insert(0, obj)
 
-    def insert_at(self, obj, index):
+    def insert_at(self, index, obj):
         self.data.insert(index, obj)
 
     def remove_at(self, index):
@@ -49,10 +47,12 @@ class KQMLList(object):
     def nth(self, n):
         return self.data[n]
 
-    def length(self):
-        return len(self.data)
+    def head(self):
+        return self.data[0].to_string()
 
-    def get_keyword_arg(self, keyword):
+    def get(self, keyword):
+        if not keyword.startswith(':'):
+            keyword = ':' + keyword
         for i, s in enumerate(self.data):
             if s.to_string().upper() == keyword.upper():
                 if i < len(self.data)-1:
@@ -61,8 +61,34 @@ class KQMLList(object):
                     return None
         return None
 
-    def remove_keyword_arg(self, keyword):
-        raise Exception('Not implemented')
+    def gets(self, keyword):
+        param = self.get(keyword)
+        if param:
+            return param.string_value()
+        return None
+
+    def set(self, keyword, value):
+        if not keyword.startswith(':'):
+            keyword = ':' + keyword
+        if isinstance(value, basestring):
+            value = KQMLToken(value)
+        if isinstance(keyword, basestring):
+            keyword = KQMLToken(keyword)
+        found = False
+        for i, key in enumerate(self.data):
+            if key.to_string().lower() == keyword.lower():
+                found = True
+                if i < len(self.data)-1:
+                    self.data[i+1] = value
+                break
+        if not found:
+            self.data.append(keyword)
+            self.data.append(value)
+
+    def sets(self, keyword, value):
+        if isinstance(value, basestring):
+            value = KQMLString(value)
+        self.set(keyword, value)
 
     def write(self, out):
         full_str = '(' + ' '.join([str(s) for s in self.data]) + ')'
@@ -84,9 +110,6 @@ class KQMLList(object):
             to_idx = len(self)
         return KQMLList(self.data[from_idx:to_idx])
 
-    def remove(self, obj):
-        self.data.remove(obj)
-
     def index_of(self, obj):
         if isinstance(obj, basestring):
             return self.index_of_string(obj)
@@ -102,5 +125,14 @@ class KQMLList(object):
             if s.lower() == keyword.lower():
                 return i
         return -1
+
+    # TODO: check if java indexOf return values are consistent
+    def index_of_string(self, s):
+        try:
+            idx = self.data.index(s)
+            return idx
+        except ValueError:
+            return -1
+
 
     #TODO: didn't implement all the functions here
