@@ -23,8 +23,6 @@ class KQMLModule(object):
         self.inp =  None
         self.out = None
         self.dispatcher = None
-        self.warning_enabled = True
-        self.debugging_enabled = False
         self.logger = logging.getLogger('KQMLModule')
         self.init()
 
@@ -88,9 +86,9 @@ class KQMLModule(object):
 
         value = self.get_parameter('-debug')
         if value in ('true', 't', 'yes'):
-            self.set_debugging_enabled(True)
+            self.logger.setLevel(logging.DEBUG)
         else:
-            self.set_debugging_enabled(False)
+            self.logger.setLevel(logging.INFO)
 
     def connect(self, host=None, startport=None):
         if host is None:
@@ -276,7 +274,7 @@ class KQMLModule(object):
         self.error_reply(msg, 'unexpected performative: ' + msg)
 
     def handle_exception(self, ex):
-        sys.stderr.write(self.name + ': ' + str(ex))
+        self.logger.error(self.name + ': ' + str(ex))
 
     def send(self, msg):
         try:
@@ -314,21 +312,13 @@ class KQMLModule(object):
         self.reply(msg, reply_msg)
 
     def error(self, msg):
-        sys.stderr.write(msg)
+        self.logger.error(msg)
 
     def warn(self, msg):
-        if self.warning_enabled:
-            sys.stderr.write(msg)
-
-    def set_warning_enabled(self, enable):
-        self.warning_enabled = enable
+        self.logger.warning(msg)
 
     def debug(self, msg):
-        if self.debugging_enabled:
-            sys.stderr.write(msg)
-
-    def set_debugging_enabled(self, enable):
-        self.debugging_enabled  = enable
+        self.logger.debug(msg)
 
 if __name__ == '__main__':
     KQMLModule(sys.argv[1:]).start()
