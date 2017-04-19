@@ -157,7 +157,7 @@ class KQMLReader(object):
             ch = self.peek_char()
             if ch == ')':
                 break
-            lst.add(self.read_expr(backquoted))
+            lst.append(self.read_expr(backquoted))
             ch = self.peek_char()
             if ch != ')':
                 if ch != '(':

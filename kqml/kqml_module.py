@@ -141,8 +141,8 @@ class KQMLModule(object):
     def ready(self):
         perf = KQMLPerformative('tell')
         content = KQMLList()
-        content.add('module-status')
-        content.add('ready')
+        content.append('module-status')
+        content.append('ready')
         perf.set('content', content)
         self.send(perf)
 
@@ -296,8 +296,8 @@ class KQMLModule(object):
             reply_id_base = self.name + '-'
         reply_id = reply_id_base + str(self.reply_id_counter)
         self.reply_id_counter += 1
-        msg.add(':reply-with')
-        msg.add(reply_id)
+        msg.append(':reply-with')
+        msg.append(reply_id)
         self.dispatcher.add_reply_continuation('%s' % reply_id, cont)
         self.send(msg)
 
