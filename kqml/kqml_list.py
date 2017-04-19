@@ -69,6 +69,8 @@ class KQMLList(object):
     def set(self, keyword, value):
         if not keyword.startswith(':'):
             keyword = ':' + keyword
+        if isinstance(value, basestring):
+            value = KQMLToken(value)
         found = False
         for i, key in enumerate(self.data):
             if key.to_string().lower() == keyword.lower():
@@ -79,6 +81,11 @@ class KQMLList(object):
         if not found:
             self.data.append(keyword)
             self.data.append(value)
+
+    def sets(self, keyword, value):
+        if isinstance(value, basestring):
+            value = KQMLString(value)
+        self.set(keyword, value)
 
     def write(self, out):
         full_str = '(' + ' '.join([str(s) for s in self.data]) + ')'

@@ -48,6 +48,9 @@ class KQMLPerformative(object):
     def set(self, keyword, value):
         self.data.set(keyword, value)
 
+    def sets(self, keyword, value):
+        self.data.sets(keyword, value)
+
     def to_list(self):
         return self.data
 
