@@ -1,5 +1,4 @@
 import re
-import StringIO
 
 class KQMLToken(object):
     def __init__(self, s=None):

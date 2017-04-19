@@ -2,7 +2,6 @@ import StringIO
 import kqml_reader
 import kqml_list
 from kqml_token import KQMLToken
-from kqml_string import KQMLString
 from kqml_exceptions import KQMLBadPerformativeException
 
 class KQMLPerformative(object):

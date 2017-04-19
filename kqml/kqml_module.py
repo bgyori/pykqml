@@ -3,7 +3,7 @@ import sys
 import socket
 import logging
 from kqml import KQMLReader, KQMLDispatcher
-from kqml import KQMLToken, KQMLString, KQMLList, KQMLPerformative
+from kqml import KQMLList, KQMLPerformative
 
 class KQMLModule(object):
     def __init__(self, argv, is_application=False):
@@ -128,10 +128,9 @@ class KQMLModule(object):
             if self.group_name is not None:
                 try:
                     if self.group_name.startswith('('):
-                        group = KQMLList.fromString(self.group_name)
+                        perf.sets('group', self.group_name)
                     else:
-                        group = KQMLToken(self.group_name)
-                    perf.set('group', group)
+                        perf.set('group', self.group_name)
                 except IOError:
                     self.logger.error('bad group name: ' + self.group_name)
             self.send(perf)
@@ -308,7 +307,7 @@ class KQMLModule(object):
 
     def error_reply(self, msg, comment):
         reply_msg = KQMLPerformative('error')
-        reply_msg.set('comment', KQMLString(comment))
+        reply_msg.sets('comment', comment)
         self.reply(msg, reply_msg)
 
     def error(self, msg):
