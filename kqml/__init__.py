@@ -1,4 +1,9 @@
 import logging
+
+class KQMLObject(object):
+    """This is the parent class for KQML classes representing messages."""
+    pass
+
 from kqml_exceptions import *
 from kqml_token import KQMLToken
 from kqml_string import KQMLString

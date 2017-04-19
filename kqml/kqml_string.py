@@ -1,4 +1,5 @@
 import StringIO
+from kqml import KQMLObject
 
 class KQMLString(object):
     def __init__(self, data=None):

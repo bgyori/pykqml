@@ -1,10 +1,11 @@
 import StringIO
+from kqml import KQMLObject
 import kqml_reader
 import kqml_list
 from kqml_token import KQMLToken
 from kqml_exceptions import KQMLBadPerformativeException
 
-class KQMLPerformative(object):
+class KQMLPerformative(KQMLObject):
     def __init__(self, objects):
         if not objects:
             raise KQMLBadPerformativeException('no elements for initialization')

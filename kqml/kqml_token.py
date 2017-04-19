@@ -1,6 +1,7 @@
 import re
+from kqml import KQMLObject
 
-class KQMLToken(object):
+class KQMLToken(KQMLObject):
     def __init__(self, s=None):
         if s is None:
             self.data = ''

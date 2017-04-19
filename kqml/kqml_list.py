@@ -1,9 +1,10 @@
 import StringIO
+from kqml import KQMLObject
 from kqml_token import KQMLToken
 from kqml_string import KQMLString
 import kqml_reader
 
-class KQMLList(object):
+class KQMLList(KQMLObject):
     def __init__(self, objects=None):
         self.data = []
         # If no objects are passed, we start with an empty list
@@ -51,7 +52,7 @@ class KQMLList(object):
 
         Returns
         -------
-        obj : KQML object
+        obj : KQMLObject
             The object corresponding to the keyword parameter
 
         Example:
@@ -99,7 +100,7 @@ class KQMLList(object):
 
         Parameters
         ----------
-        obj : KQML object or str
+        obj : KQMLObject or str
             If a string is passed, it is instantiated as a
             KQMLToken before being added to the list.
         """
@@ -112,7 +113,7 @@ class KQMLList(object):
 
         Parameters
         ----------
-        obj : KQML object or str
+        obj : KQMLObject or str
             If a string is passed, it is instantiated as a
             KQMLToken before being added to the list.
         """
@@ -125,7 +126,7 @@ class KQMLList(object):
 
         Parameters
         ----------
-        obj : KQML object or str
+        obj : KQMLObject or str
             If a string is passed, it is instantiated as a
             KQMLToken before being added to the list.
         index : int
@@ -154,7 +155,7 @@ class KQMLList(object):
             given, it is added automatically (e.g. "keyword" will be found as
             ":keyword" in the list).
 
-        value : KQML object or str
+        value : KQMLObject or str
             If the value is given as str, it is instantiated as a KQMLToken
 
         Example:
