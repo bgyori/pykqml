@@ -15,7 +15,7 @@ class KQMLModule(object):
         self.is_application = is_application
         self.host = self.DEFAULT_HOST
         self.port = self.DEFAULT_PORT
-        self.testing = True
+        self.testing = False
         self.socket = None
         self.name = None
         self.group_name = None
