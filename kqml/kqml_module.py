@@ -15,7 +15,7 @@ class KQMLModule(object):
         self.is_application = is_application
         self.host = self.DEFAULT_HOST
         self.port = self.DEFAULT_PORT
-        self.auto_connect = True
+        self.testing = True
         self.socket = None
         self.name = None
         self.group_name = None
@@ -31,7 +31,7 @@ class KQMLModule(object):
 
     def init(self):
         self.handle_common_parameters()
-        if self.auto_connect:
+        if not self.testing:
             self.logger.info('Using socket connection')
             conn = self.connect(self.host, self.port)
             if not conn:
@@ -54,20 +54,21 @@ class KQMLModule(object):
         return None
 
     def handle_common_parameters(self):
-        value = self.get_parameter('-connect')
+        value = self.get_parameter('-testing')
         if value is not None:
             if value.lower() in ('true', 't', 'yes'):
-                self.auto_connect = True
+                self.testing = True
             elif value.lower() in ('false', 'nil', 'no'):
-                self.auto_connect = False
+                self.testing = False
+        value = self.get_parameter('-connect')
+        if value is not None:
+            colon = value.find(':')
+            if colon > -1:
+                self.host = value[0:colon]
+                self.port = int(value[colon+1:])
             else:
-                colon = value.find(':')
-                if colon > -1:
-                    self.host = value[0:colon]
-                    self.port = int(value[colon+1:])
-                else:
-                    self.host = value
-                    self.port = self.DEFAULT_PORT
+                self.host = value
+                self.port = self.DEFAULT_PORT
 
         value = self.get_parameter('-name')
         if value is not None:
