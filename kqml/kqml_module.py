@@ -27,7 +27,8 @@ class KQMLModule(object):
         self.init()
 
     def start(self):
-        self.dispatcher.start()
+        if not self.testing:
+            self.dispatcher.start()
 
     def init(self):
         self.handle_common_parameters()
@@ -46,6 +47,22 @@ class KQMLModule(object):
 
         if self.name is not None:
             self.register()
+
+    def subscribe_request(self, req_type):
+        msg = KQMLPerformative('subscribe')
+        content = KQMLList('request')
+        content.append('&key')
+        content.set('content', KQMLList.from_string('(%s . *)' % req_type))
+        msg.set('content', content)
+        self.send(msg)
+
+    def subscribe_tell(self, tell_type):
+        msg = KQMLPerformative('subscribe')
+        content = KQMLList('tell')
+        content.append('&key')
+        content.set('content', KQMLList.from_string('(%s . *)' % tell_type))
+        msg.set('content', content)
+        self.send(msg)
 
     def get_parameter(self, param_str):
         for i, a in enumerate(self.argv):
@@ -137,10 +154,10 @@ class KQMLModule(object):
             self.send(perf)
 
     def ready(self):
-        perf = KQMLPerformative('tell')
+        msg = KQMLPerformative('tell')
         content = KQMLList(['module-status', 'ready'])
-        perf.set('content', content)
-        self.send(perf)
+        msg.set('content', content)
+        self.send(msg)
 
     def exit(self, n):
         if self.is_application:
