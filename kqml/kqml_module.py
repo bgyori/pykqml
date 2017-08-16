@@ -64,8 +64,7 @@ class KQMLModule(object):
                  
         defaults = dict(host='localost', port=6200, is_application=False,
             testing=False, socket=None, name=None, group_name=None,
-            scan_for_port=False, inp=None, out=None, dispatcher=None,
-            debug=False)
+            scan_for_port=False, debug=False)
         
         self.MAX_PORT_TRIES = 100
         self.reply_id_counter=1
@@ -96,11 +95,15 @@ class KQMLModule(object):
             self.logger.setLevel(logging.INFO)
         
         if not self.testing:
+            self.out = None
+            self.inp = None
             self.logger.info('Using socket connection')
             conn = self.connect(self.host, self.port)
-            if conn is None:
+            if conn:
                 self.logger.error('Connection failed')
                 self.exit(-1)
+            assert self.inp is not None and self.out is not None,\
+                "Connection formed but input (%s) and output (%s) not set." % (self.inp, self.out)
         else:
             self.logger.info('Using stdio connection')
             self.out = sys.stdout
@@ -114,7 +117,7 @@ class KQMLModule(object):
 
     def start(self):
         if not self.testing:
-            self.dispatcher.start()        
+            self.dispatcher.start()
 
     def subscribe_request(self, req_type):
         msg = KQMLPerformative('subscribe')
@@ -162,6 +165,7 @@ class KQMLModule(object):
         except socket.error as e:
             if verbose:
                 self.logger.error(e)
+            return False
 
     def register(self):
         if self.name is not None:
