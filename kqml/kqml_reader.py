@@ -141,7 +141,7 @@ class KQMLReader(object):
         else:
             for _ in range(count):
                 buf += self.read_char()
-        return KQMLLString(buf)
+        return KQMLString(buf)
 
     def read_list_for_file(self):
         self.skip_whitespace()

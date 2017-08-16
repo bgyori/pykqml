@@ -4,38 +4,101 @@ import socket
 import logging
 from kqml import KQMLReader, KQMLDispatcher
 from kqml import KQMLList, KQMLPerformative
+from kqml_exceptions import KQMLException
+from docutils.io import InputError
+
+def translate_argv(raw_args):
+    '''Enables conversion from system arguments.
+    
+    Inputs:
+    ------
+    raw_args -- args taken raw from the system input.
+    
+    Outputs:
+    -------
+    kwargs -- the inputs fromatted as a kwargs dict. To use as input, simply
+            use `KQMLModule(**kwargs)`.
+    '''
+    kwargs = {}
+    def get_parameter(param_str):
+        for i, a in enumerate(raw_args):
+            if a == param_str:
+                assert len(raw_args) == i+2 and raw_args[i+1][0] != '-',\
+                    'All arguments must have a value, e.g. `-testing true`'
+                return raw_args[i+1]
+        return None
+
+    value = get_parameter('-testing')
+    if value is not None and value.lower() in ('true', 't', 'yes'):
+            kwargs['testing'] = True
+    
+    value = get_parameter('-connect')
+    if value is not None:
+        colon = value.find(':')
+        if colon > -1:
+            kwargs['host'] = value[0:colon]
+            kwargs['port'] = int(value[colon+1:])
+        else:
+            kwargs['host'] = value
+
+    value = get_parameter('-name')
+    if value is not None:
+        kwargs['name'] = value
+
+    value = get_parameter('-group')
+    if value is not None:
+        kwargs['group_name'] = value
+
+    value = get_parameter('-scan')
+    if value in ('true', 't', 'yes'):
+        kwargs['scan_for_port'] = True
+
+    value = get_parameter('-debug')
+    if value in ('true', 't', 'yes'):
+        kwargs['debug']=True
+    
+    return kwargs
 
 class KQMLModule(object):
-    def __init__(self, argv, is_application=False):
-        self.DEFAULT_HOST = 'localhost'
-        self.DEFAULT_PORT = 6200
+    def __init__(self, argv = None, **kwargs):
+                 
+        defaults = dict(host='localost', port=6200, is_application=False,
+            testing=False, socket=None, name=None, group_name=None,
+            scan_for_port=False, inp=None, out=None, dispatcher=None,
+            debug=False)
+        
         self.MAX_PORT_TRIES = 100
-        self.reply_id_counter = 1
-        self.argv = argv
-        self.is_application = is_application
-        self.host = self.DEFAULT_HOST
-        self.port = self.DEFAULT_PORT
-        self.testing = False
-        self.socket = None
-        self.name = None
-        self.group_name = None
-        self.scan_for_port = False
-        self.inp =  None
-        self.out = None
-        self.dispatcher = None
-        self.logger = logging.getLogger('KQMLModule')
-        self.init()
-
-    def start(self):
-        if not self.testing:
-            self.dispatcher.start()
-
-    def init(self):
-        self.handle_common_parameters()
+        self.reply_id_counter=1
+        
+        #argv = kwargs.pop('argv', None)
+        if isinstance(argv, list):
+            kwargs.update(translate_argv(argv))
+        elif argv is not None:
+            raise KQMLException("Unusable type for keyord argument `argv`.")
+        
+        for kw, arg in kwargs.items():
+            if kw not in defaults.keys():
+                raise InputError('Unexpected keyword argument: %s' % kw)
+            else:
+                defaults.pop(kw)
+            self.__setattr__(kw, arg)
+        for kw, arg in defaults.items():
+            self.__setattr__(kw, arg)
+        
+        if self.name is not None:
+            self.logger = logging.getLogger(self.name)
+        else:
+            self.logger = logging.getLogger('KQMLModule')
+        
+        if self.debug:
+            self.logger.setLevel(logging.DEBUG)
+        else:
+            self.logger.setLevel(logging.INFO)
+        
         if not self.testing:
             self.logger.info('Using socket connection')
             conn = self.connect(self.host, self.port)
-            if not conn:
+            if conn is None:
                 self.logger.error('Connection failed')
                 self.exit(-1)
         else:
@@ -44,9 +107,14 @@ class KQMLModule(object):
             self.inp = KQMLReader(sys.stdin)
 
         self.dispatcher = KQMLDispatcher(self, self.inp, self.name)
+            
+        self.register()
+            
+        return
 
-        if self.name is not None:
-            self.register()
+    def start(self):
+        if not self.testing:
+            self.dispatcher.start()        
 
     def subscribe_request(self, req_type):
         msg = KQMLPerformative('subscribe')
@@ -63,50 +131,6 @@ class KQMLModule(object):
         content.set('content', KQMLList.from_string('(%s . *)' % tell_type))
         msg.set('content', content)
         self.send(msg)
-
-    def get_parameter(self, param_str):
-        for i, a in enumerate(self.argv):
-            if a == param_str:
-                return self.argv[i+1]
-        return None
-
-    def handle_common_parameters(self):
-        value = self.get_parameter('-testing')
-        if value is not None:
-            if value.lower() in ('true', 't', 'yes'):
-                self.testing = True
-            elif value.lower() in ('false', 'nil', 'no'):
-                self.testing = False
-        value = self.get_parameter('-connect')
-        if value is not None:
-            colon = value.find(':')
-            if colon > -1:
-                self.host = value[0:colon]
-                self.port = int(value[colon+1:])
-            else:
-                self.host = value
-                self.port = self.DEFAULT_PORT
-
-        value = self.get_parameter('-name')
-        if value is not None:
-            self.name = value
-            self.logger = logging.getLogger(self.name)
-
-        value = self.get_parameter('-group')
-        if value is not None:
-            self.group = value
-
-        value = self.get_parameter('-scan')
-        if value in ('true', 't', 'yes'):
-            self.scan_for_port = True
-        else:
-            self.scan_for_port = False
-
-        value = self.get_parameter('-debug')
-        if value in ('true', 't', 'yes'):
-            self.logger.setLevel(logging.DEBUG)
-        else:
-            self.logger.setLevel(logging.INFO)
 
     def connect(self, host=None, startport=None):
         if host is None:
@@ -327,15 +351,6 @@ class KQMLModule(object):
         reply_msg = KQMLPerformative('error')
         reply_msg.sets('comment', comment)
         self.reply(msg, reply_msg)
-
-    def error(self, msg):
-        self.logger.error(msg)
-
-    def warn(self, msg):
-        self.logger.warning(msg)
-
-    def debug(self, msg):
-        self.logger.debug(msg)
-
+    
 if __name__ == '__main__':
-    KQMLModule(sys.argv[1:]).start()
+    KQMLModule(argv=sys.argv[1:]).start()
