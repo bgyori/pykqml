@@ -8,22 +8,24 @@ from kqml_exceptions import KQMLException
 from docutils.io import InputError
 
 def translate_argv(raw_args):
-    '''Enables conversion from system arguments.
-    
-    Inputs:
-    ------
-    raw_args -- args taken raw from the system input.
-    
-    Outputs:
+    """Enables conversion from system arguments.
+
+    Parameters
+    ----------
+    raw_args : list
+        Arguments taken raw from the system input.
+
+    Returns
     -------
-    kwargs -- the inputs fromatted as a kwargs dict. To use as input, simply
-            use `KQMLModule(**kwargs)`.
-    '''
+    kwargs : dict
+        The input arguments formatted as a kwargs dict.
+        To use as input, simply use `KQMLModule(**kwargs)`.
+    """
     kwargs = {}
     def get_parameter(param_str):
         for i, a in enumerate(raw_args):
             if a == param_str:
-                assert len(raw_args) == i+2 and raw_args[i+1][0] != '-',\
+                assert len(raw_args) == i+2 and raw_args[i+1][0] != '-', \
                     'All arguments must have a value, e.g. `-testing true`'
                 return raw_args[i+1]
         return None
@@ -31,7 +33,7 @@ def translate_argv(raw_args):
     value = get_parameter('-testing')
     if value is not None and value.lower() in ('true', 't', 'yes'):
             kwargs['testing'] = True
-    
+
     value = get_parameter('-connect')
     if value is not None:
         colon = value.find(':')
@@ -56,25 +58,23 @@ def translate_argv(raw_args):
     value = get_parameter('-debug')
     if value in ('true', 't', 'yes'):
         kwargs['debug']=True
-    
+
     return kwargs
 
 class KQMLModule(object):
-    def __init__(self, argv = None, **kwargs):
-                 
+    def __init__(self, argv=None, **kwargs):
         defaults = dict(host='localost', port=6200, is_application=False,
-            testing=False, socket=None, name=None, group_name=None,
-            scan_for_port=False, debug=False)
-        
+                        testing=False, socket=None, name=None, group_name=None,
+                        scan_for_port=False, debug=False)
+
         self.MAX_PORT_TRIES = 100
         self.reply_id_counter=1
-        
-        #argv = kwargs.pop('argv', None)
+
         if isinstance(argv, list):
             kwargs.update(translate_argv(argv))
         elif argv is not None:
             raise KQMLException("Unusable type for keyord argument `argv`.")
-        
+
         for kw, arg in kwargs.items():
             if kw not in defaults.keys():
                 raise InputError('Unexpected keyword argument: %s' % kw)
@@ -83,17 +83,17 @@ class KQMLModule(object):
             self.__setattr__(kw, arg)
         for kw, arg in defaults.items():
             self.__setattr__(kw, arg)
-        
+
         if self.name is not None:
             self.logger = logging.getLogger(self.name)
         else:
             self.logger = logging.getLogger('KQMLModule')
-        
+
         if self.debug:
             self.logger.setLevel(logging.DEBUG)
         else:
             self.logger.setLevel(logging.INFO)
-        
+
         if not self.testing:
             self.out = None
             self.inp = None
@@ -102,18 +102,17 @@ class KQMLModule(object):
             if conn:
                 self.logger.error('Connection failed')
                 self.exit(-1)
-            assert self.inp is not None and self.out is not None,\
-                "Connection formed but input (%s) and output (%s) not set." % (self.inp, self.out)
+            assert self.inp is not None and self.out is not None, \
+                "Connection formed but input (%s) and output (%s) not set." % \
+                (self.inp, self.out)
         else:
             self.logger.info('Using stdio connection')
             self.out = sys.stdout
             self.inp = KQMLReader(sys.stdin)
 
         self.dispatcher = KQMLDispatcher(self, self.inp, self.name)
-            
+
         self.register()
-            
-        return
 
     def start(self):
         if not self.testing:
