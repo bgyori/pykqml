@@ -66,7 +66,7 @@ class KQMLModule(object):
         defaults = dict(host='localhost', port=6200, is_application=False,
                         testing=False, socket=None, name=None, group_name=None,
                         scan_for_port=False, debug=False)
-
+        self.dispatcher = None
         self.MAX_PORT_TRIES = 100
         self.reply_id_counter=1
 
