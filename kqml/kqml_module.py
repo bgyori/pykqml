@@ -63,7 +63,7 @@ def translate_argv(raw_args):
 
 class KQMLModule(object):
     def __init__(self, argv=None, **kwargs):
-        defaults = dict(host='localost', port=6200, is_application=False,
+        defaults = dict(host='localhost', port=6200, is_application=False,
                         testing=False, socket=None, name=None, group_name=None,
                         scan_for_port=False, debug=False)
 
@@ -99,7 +99,7 @@ class KQMLModule(object):
             self.inp = None
             self.logger.info('Using socket connection')
             conn = self.connect(self.host, self.port)
-            if conn:
+            if not conn:
                 self.logger.error('Connection failed')
                 self.exit(-1)
             assert self.inp is not None and self.out is not None, \
@@ -354,6 +354,6 @@ class KQMLModule(object):
         reply_msg = KQMLPerformative('error')
         reply_msg.sets('comment', comment)
         self.reply(msg, reply_msg)
-    
+
 if __name__ == '__main__':
     KQMLModule(argv=sys.argv[1:]).start()
