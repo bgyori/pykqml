@@ -5,6 +5,7 @@ PyKQML is an implementation of KQML messaging in Python. It consists of the foll
 
     KQMLToken
     KQMLString
+    KQMLQuotation
     KQMLList
     KQMLPerformative
     KQMLReader

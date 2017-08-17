@@ -6,6 +6,7 @@ import kqml_list
 import kqml_performative
 from kqml_token import KQMLToken
 from kqml_string import KQMLString
+from kqml_quotation import KQMLQuotation
 
 logger = logging.getLogger('KQMLReader')
 
@@ -140,7 +141,7 @@ class KQMLReader(object):
         else:
             for _ in range(count):
                 buf += self.read_char()
-        return KQMLLString(buf)
+        return KQMLString(buf)
 
     def read_list_for_file(self):
         self.skip_whitespace()

@@ -5,6 +5,7 @@ class KQMLObject(object):
     pass
 
 from kqml_exceptions import *
+from kqml_quotation import KQMLQuotation
 from kqml_token import KQMLToken
 from kqml_string import KQMLString
 from kqml_list import KQMLList
