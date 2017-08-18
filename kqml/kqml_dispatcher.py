@@ -29,6 +29,8 @@ class KQMLDispatcher(object):
         except IOError as ex:
             if not self.shutdown_initiated:
                 self.receiver.handle_exception(ex)
+        except ValueError:
+            return
 
     def warn(self, msg):
         logger.warning(msg)
