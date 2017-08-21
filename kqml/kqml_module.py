@@ -5,7 +5,6 @@ import logging
 from kqml import KQMLReader, KQMLDispatcher
 from kqml import KQMLList, KQMLPerformative
 from kqml_exceptions import KQMLException
-from docutils.io import InputError
 
 def translate_argv(raw_args):
     """Enables conversion from system arguments.
@@ -77,7 +76,7 @@ class KQMLModule(object):
 
         for kw, arg in kwargs.items():
             if kw not in defaults.keys():
-                raise InputError('Unexpected keyword argument: %s' % kw)
+                raise ValueError('Unexpected keyword argument: %s' % kw)
             else:
                 defaults.pop(kw)
             self.__setattr__(kw, arg)
