@@ -56,7 +56,7 @@ def translate_argv(raw_args):
 
     value = get_parameter('-debug')
     if value in ('true', 't', 'yes'):
-        kwargs['debug']=True
+        kwargs['debug'] = True
 
     return kwargs
 
@@ -67,7 +67,7 @@ class KQMLModule(object):
                         scan_for_port=False, debug=False)
         self.dispatcher = None
         self.MAX_PORT_TRIES = 100
-        self.reply_id_counter=1
+        self.reply_id_counter = 1
 
         if isinstance(argv, list):
             kwargs.update(translate_argv(argv))

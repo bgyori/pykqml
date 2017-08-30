@@ -67,23 +67,23 @@ class KQMLDispatcher(object):
 
         vl = verb.lower()
         content = msg.get('content')
-        content_msg_types = ['ask-if', 'ask-all', 'ask-one', 'stream-all', 
+        content_msg_types = ['ask-if', 'ask-all', 'ask-one', 'stream-all',
                              'tell', 'untell', 'deny', 'insert', 'uninsert',
                              'delete-one', 'delete-all', 'undelete', 'achieve',
-                             'unachieve', 'advertise', 'subscribe', 'standby', 
-                             'register', 'forward', 'broadcast', 
+                             'unachieve', 'advertise', 'subscribe', 'standby',
+                             'register', 'forward', 'broadcast',
                              'transport-address', 'broker-one', 'broker-all',
                              'recommend-one', 'recommend-all', 'recruit-one',
                              'recruit-all', 'reply', 'request']
-        msg_only_types = ['eos', 'error', 'sorry', 'ready', 'next', 'next', 'rest',
-                          'discard', 'unregister']
-        
+        msg_only_types = ['eos', 'error', 'sorry', 'ready', 'next', 'next',
+                          'rest', 'discard', 'unregister']
+
         method_name = 'receive_' + vl.replace('-', '_')
         if vl in content_msg_types:
             if content is None:
                 self.receiver.receive_message_missing_content(msg)
                 return
-            
+
             for cmt in content_msg_types:
                 if vl == cmt:
                     self.receiver.__getattribute__(method_name)(msg, content)
@@ -92,7 +92,7 @@ class KQMLDispatcher(object):
                 self.receiver.__getattribute__(method_name)(msg)
         else:
             self.receiver.recieve_other_performative(msg)
-        
+
         return
 
 
