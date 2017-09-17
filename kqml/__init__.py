@@ -1,3 +1,4 @@
+__version__ = '0.4'
 import logging
 
 class KQMLObject(object):

@@ -1,7 +1,7 @@
 from distutils.core import setup
 
 setup(name='pykqml',
-    version='0.1',
+    version='0.4',
     packages=['kqml'],
     keywords=['kqml', 'agent', 'nlp', 'communication', 'dialogue'],
     url='http://github.com/bgyori/pykqml',
