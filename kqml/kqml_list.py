@@ -90,7 +90,7 @@ class KQMLList(KQMLObject):
             kl.gets('reason') # 'INVALID_PARAMETER'
         """
         param = self.get(keyword)
-        if param:
+        if param is not None:
             return param.string_value()
         return None
 

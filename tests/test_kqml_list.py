@@ -15,3 +15,8 @@ def test_from_string():
     kl = KQMLList.from_string(s)
     for obj in kl.data:
         assert(not(isinstance(obj, basestring)))
+
+def test_gets():
+    kl = KQMLList.from_string('(:hello "")')
+    hello = kl.gets('hello')
+    assert(hello == '')
