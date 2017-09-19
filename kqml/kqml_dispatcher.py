@@ -1,6 +1,6 @@
 import logging
-
 logger = logging.getLogger('KQMLDispatcher')
+
 
 class KQMLDispatcher(object):
     def __init__(self, rec, inp, agent_name):
@@ -11,7 +11,6 @@ class KQMLDispatcher(object):
         self.counter = 0
         self.name = 'KQML-Dispatcher-%d' % self.counter
         self.agent_name = agent_name
-        self.logger = logging.getLogger(agent_name)
         self.counter += 1
         self.shutdown_initiated = False
 
@@ -38,7 +37,7 @@ class KQMLDispatcher(object):
     def shutdown(self):
         self.shutdown_initiated = True
         try:
-            self.logger.info('KQML dispatcher shutting down')
+            logger.info('KQML dispatcher shutting down')
             self.reader.close()
         except IOError:
             logger.error('KQML dispatched IOError.')
@@ -89,7 +88,6 @@ class KQMLDispatcher(object):
             self.receiver.recieve_other_performative(msg)
 
         return
-
 
     def add_reply_continuation(self, reply_id, cont):
         self.reply_continuations[reply_id.upper()] = cont

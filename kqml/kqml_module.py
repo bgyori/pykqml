@@ -6,6 +6,9 @@ from kqml import KQMLReader, KQMLDispatcher
 from kqml import KQMLList, KQMLPerformative
 from kqml_exceptions import KQMLException
 
+logger = logging.getLogger('KQMLModule')
+
+
 def translate_argv(raw_args):
     """Enables conversion from system arguments.
 
@@ -21,6 +24,7 @@ def translate_argv(raw_args):
         To use as input, simply use `KQMLModule(**kwargs)`.
     """
     kwargs = {}
+
     def get_parameter(param_str):
         for i, a in enumerate(raw_args):
             if a == param_str:
@@ -60,6 +64,7 @@ def translate_argv(raw_args):
 
     return kwargs
 
+
 class KQMLModule(object):
     def __init__(self, argv=None, **kwargs):
         defaults = dict(host='localhost', port=6200, is_application=False,
@@ -83,29 +88,24 @@ class KQMLModule(object):
         for kw, arg in defaults.items():
             self.__setattr__(kw, arg)
 
-        if self.name is not None:
-            self.logger = logging.getLogger(self.name)
-        else:
-            self.logger = logging.getLogger('KQMLModule')
-
         if self.debug:
-            self.logger.setLevel(logging.DEBUG)
+            logger.setLevel(logging.DEBUG)
         else:
-            self.logger.setLevel(logging.INFO)
+            logger.setLevel(logging.INFO)
 
         if not self.testing:
             self.out = None
             self.inp = None
-            self.logger.info('Using socket connection')
+            logger.info('Using socket connection')
             conn = self.connect(self.host, self.port)
             if not conn:
-                self.logger.error('Connection failed')
+                logger.error('Connection failed')
                 self.exit(-1)
             assert self.inp is not None and self.out is not None, \
                 "Connection formed but input (%s) and output (%s) not set." % \
                 (self.inp, self.out)
         else:
-            self.logger.info('Using stdio connection')
+            logger.info('Using stdio connection')
             self.out = sys.stdout
             self.inp = KQMLReader(sys.stdin)
 
@@ -146,8 +146,8 @@ class KQMLModule(object):
                 conn = self.connect1(host, port, False)
                 if conn:
                     return True
-            self.logger.error('Failed to connect to ' + host + ':' + \
-                              startport + '-' + port)
+            logger.error('Failed to connect to ' + host + ':' + \
+                         startport + '-' + port)
             return False
 
     def connect1(self, host, port, verbose=True):
@@ -162,7 +162,7 @@ class KQMLModule(object):
             return True
         except socket.error as e:
             if verbose:
-                self.logger.error(e)
+                logger.error(e)
             return False
 
     def register(self):
@@ -176,7 +176,7 @@ class KQMLModule(object):
                     else:
                         perf.set('group', self.group_name)
                 except IOError:
-                    self.logger.error('bad group name: ' + self.group_name)
+                    logger.error('bad group name: ' + self.group_name)
             self.send(perf)
 
     def ready(self):
@@ -317,17 +317,17 @@ class KQMLModule(object):
         self.error_reply(msg, 'unexpected performative: ' + msg)
 
     def handle_exception(self, ex):
-        self.logger.error(self.name + ': ' + str(ex))
+        logger.error(self.name + ': ' + str(ex))
 
     def send(self, msg):
         try:
             msg.write(self.out)
         except IOError:
-            self.logger.error('IOError during message sending')
+            logger.error('IOError during message sending')
             pass
         self.out.write('\n')
         self.out.flush()
-        self.logger.debug(msg.__repr__())
+        logger.debug(msg.__repr__())
 
     def send_with_continuation(self, msg, cont):
         reply_id_base = 'IO-'
@@ -353,6 +353,7 @@ class KQMLModule(object):
         reply_msg = KQMLPerformative('error')
         reply_msg.sets('comment', comment)
         self.reply(msg, reply_msg)
+
 
 if __name__ == '__main__':
     KQMLModule(argv=sys.argv[1:]).start()

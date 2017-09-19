@@ -15,5 +15,5 @@ from kqml_reader import KQMLReader
 from kqml_dispatcher import KQMLDispatcher
 from kqml_module import KQMLModule
 
-logging.basicConfig(format='%(levelname)s: %(modulename)s/%(name)s - %(message)s',
+logging.basicConfig(format='%(levelname)s: %(name)s - %(message)s',
                     level=logging.INFO)
