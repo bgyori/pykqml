@@ -215,7 +215,7 @@ class KQMLModule(object):
         self.error_reply(msg, 'unexpected performative: stream-all')
 
     def receive_tell(self, msg, content):
-        self.error_reply(msg, 'unexpected performative: tell')
+        logger.error('unexpected performative: tell')
 
     def receive_untell(self, msg, content):
         self.error_reply(msg, 'unexpected performative: untell')
@@ -265,7 +265,7 @@ class KQMLModule(object):
     def receive_transport_address(self, msg, content):
         self.error_reply(msg, 'unexpected performative: transport-address')
 
-    def receive_borker_one(self, msg, content):
+    def receive_broker_one(self, msg, content):
         self.error_reply(msg, 'unexpected performative: broker-one')
 
     def receive_broker_all(self, msg, content):
@@ -284,7 +284,7 @@ class KQMLModule(object):
         self.error_reply(msg, 'unexpected performative: recruit-all')
 
     def receive_reply(self, msg, content):
-        self.error_reply(msg, 'unexpected performative: reply')
+        logger.error(msg, 'unexpected performative: reply')
 
     def receive_request(self, msg, content):
         self.error_reply(msg, 'unexpected performative: request')
@@ -293,13 +293,13 @@ class KQMLModule(object):
         self.error_reply(msg, 'unexpected performative: eos')
 
     def receive_error(self, msg):
-        self.error_reply(msg, 'unexpected performative: error')
+        logger.error('unexpected performative: error')
 
     def receive_sorry(self, msg):
-        self.error_reply(msg, 'unexpected performative: sorry')
+        logger.error('unexpected performative: sorry')
 
     def receive_ready(self, msg):
-        self.error_reply(msg, 'unexpected performative: ready')
+        logger.error(msg, 'unexpected performative: ready')
 
     def receive_next(self, msg):
         self.error_reply(msg, 'unexpected performative: next')
@@ -311,13 +311,13 @@ class KQMLModule(object):
         self.error_reply(msg, 'unexpected performative: discard')
 
     def receive_unregister(self, msg):
-        self.error_reply(msg, 'unexpected performative: unregister')
+        logger.error(msg, 'unexpected performative: unregister')
 
     def receive_other_performative(self, msg):
         self.error_reply(msg, 'unexpected performative: ' + msg)
 
     def handle_exception(self, ex):
-        logger.error(self.name + ': ' + str(ex))
+        logger.error(str(ex))
 
     def send(self, msg):
         try:
