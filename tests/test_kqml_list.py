@@ -1,3 +1,4 @@
+from kqml import KQMLObject
 from kqml.kqml_list import KQMLList
 from kqml.kqml_token import KQMLToken
 
@@ -11,12 +12,12 @@ def test_init():
     assert(kl.data == ['a', 'b'])
 
 def test_from_string():
-    s = '(FAILURE :reason INVALID_DESCRIPTION)'
+    s = b'(FAILURE :reason INVALID_DESCRIPTION)'
     kl = KQMLList.from_string(s)
     for obj in kl.data:
-        assert(not(isinstance(obj, basestring)))
+        assert(isinstance(obj, KQMLObject))
 
 def test_gets():
-    kl = KQMLList.from_string('(:hello "")')
+    kl = KQMLList.from_string(b'(:hello "")')
     hello = kl.gets('hello')
     assert(hello == '')
