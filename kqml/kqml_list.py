@@ -1,4 +1,4 @@
-import StringIO
+from io import StringIO
 from kqml import KQMLObject
 from kqml_token import KQMLToken
 from kqml_string import KQMLString
@@ -206,13 +206,13 @@ class KQMLList(KQMLObject):
         out.write(full_str)
 
     def to_string(self):
-        out = StringIO.StringIO()
+        out = StringIO()
         self.write(out)
         return out.getvalue()
 
     @classmethod
     def from_string(cls, s):
-        sreader = StringIO.StringIO(s)
+        sreader = StringIO(s)
         kreader = kqml_reader.KQMLReader(sreader)
         return kreader.read_list()
 

@@ -1,4 +1,4 @@
-import StringIO
+from io import StringIO
 from kqml import KQMLObject
 import kqml_reader
 import kqml_list
@@ -62,7 +62,7 @@ class KQMLPerformative(KQMLObject):
 
     @classmethod
     def from_string(cls, s):
-        sreader = StringIO.StringIO(s)
+        sreader = StringIO(s)
         kreader = kqml_reader.KQMLReader(sreader)
         return cls(kreader.read_list())
 
