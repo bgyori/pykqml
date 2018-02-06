@@ -7,7 +7,7 @@ class KQMLToken(KQMLObject):
         if s is None:
             self.data = ''
         else:
-            self.data = s
+            self.data = safe_decode(s)
 
     def __len__(self):
         return len(self.data)
@@ -23,7 +23,7 @@ class KQMLToken(KQMLObject):
         return self.data.upper()
 
     def write(self, out):
-        out.write(self.data)
+        out.write(self.data.encode())
 
     def to_string(self):
         return self.data

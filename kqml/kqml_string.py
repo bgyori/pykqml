@@ -5,7 +5,7 @@ from .util import safe_decode
 class KQMLString(object):
     def __init__(self, data=None):
         if data is None:
-            self.data = b''
+            self.data = ''
         else:
             self.data = safe_decode(data)
 

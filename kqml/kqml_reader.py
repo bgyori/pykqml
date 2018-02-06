@@ -36,7 +36,7 @@ class KQMLReader(object):
             ch_ = self.reader.peek(1)
             if not ch_:
                 raise EOFError
-            ch = bytes(ch_[0]).decode()
+            ch = bytes([ch_[0]]).decode()
         else:
             ch = self.read_char()
             self.unget_char(ch)
