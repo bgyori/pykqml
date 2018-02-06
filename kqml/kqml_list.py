@@ -15,7 +15,7 @@ class KQMLList(KQMLObject):
             for o in objects:
                 self.append(o)
         # If a string is passed, it becomes the "head" of the list
-        elif isinstance(objects, basestring):
+        elif isinstance(objects, str):
             self.append(objects)
 
     def __str__(self):
@@ -104,7 +104,7 @@ class KQMLList(KQMLObject):
             If a string is passed, it is instantiated as a
             KQMLToken before being added to the list.
         """
-        if isinstance(obj, basestring):
+        if isinstance(obj, str):
             obj = KQMLToken(obj)
         self.data.append(obj)
 
@@ -117,7 +117,7 @@ class KQMLList(KQMLObject):
             If a string is passed, it is instantiated as a
             KQMLToken before being added to the list.
         """
-        if isinstance(obj, basestring):
+        if isinstance(obj, str):
             obj = KQMLToken(obj)
         self.data.insert(0, obj)
 
@@ -164,9 +164,9 @@ class KQMLList(KQMLObject):
         """
         if not keyword.startswith(':'):
             keyword = ':' + keyword
-        if isinstance(value, basestring):
+        if isinstance(value, str):
             value = KQMLToken(value)
-        if isinstance(keyword, basestring):
+        if isinstance(keyword, str):
             keyword = KQMLToken(keyword)
         found = False
         for i, key in enumerate(self.data):
@@ -197,7 +197,7 @@ class KQMLList(KQMLObject):
             kl = KQMLList.from_string('(FAILURE)')
             kl.sets('reason', 'this is a custom string message, not a token')
         """
-        if isinstance(value, basestring):
+        if isinstance(value, str):
             value = KQMLString(value)
         self.set(keyword, value)
 
@@ -222,7 +222,7 @@ class KQMLList(KQMLObject):
         return KQMLList(self.data[from_idx:to_idx])
 
     def index_of(self, obj):
-        if isinstance(obj, basestring):
+        if isinstance(obj, str):
             return self.index_of_string(obj)
         else:
             try:

@@ -10,7 +10,7 @@ class KQMLPerformative(KQMLObject):
         if not objects:
             raise KQMLBadPerformativeException('no elements for initialization')
         # If we get a string then we start a list with the string as the head
-        if isinstance(objects, basestring):
+        if isinstance(objects, str):
             self.data = kqml_list.KQMLList(objects)
         elif isinstance(objects, kqml_list.KQMLList):
             self._validate(objects)

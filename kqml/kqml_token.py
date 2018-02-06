@@ -12,7 +12,7 @@ class KQMLToken(KQMLObject):
         return len(self.data)
 
     def equals_ignore_case(self, s):
-        if isinstance(s, KQMLToken) or isinstance(s, basestring):
+        if isinstance(s, KQMLToken) or isinstance(s, str):
             return (self.data.lower() == s.lower())
 
     def lower(self):
