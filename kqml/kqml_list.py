@@ -1,8 +1,9 @@
-from io import StringIO
+from io import BytesIO
 from . import KQMLObject
 from .kqml_token import KQMLToken
 from .kqml_string import KQMLString
 import kqml.kqml_reader as kqml_reader
+from .util import safe_decode
 
 class KQMLList(KQMLObject):
     def __init__(self, objects=None):
@@ -19,7 +20,8 @@ class KQMLList(KQMLObject):
             self.append(objects)
 
     def __str__(self):
-        return '(' + ' '.join([d.__str__() for d in self.data]) + ')'
+        return safe_decode('(' + ' '.join([d.__str__()
+                                           for d in self.data]) + ')')
 
     def __repr__(self):
         return '(' + ' '.join([d.__repr__() for d in self.data]) + ')'
@@ -203,16 +205,16 @@ class KQMLList(KQMLObject):
 
     def write(self, out):
         full_str = '(' + ' '.join([str(s) for s in self.data]) + ')'
-        out.write(full_str)
+        out.write(full_str.encode())
 
     def to_string(self):
-        out = StringIO()
+        out = BytesIO()
         self.write(out)
-        return out.getvalue()
+        return safe_decode(out.getvalue())
 
     @classmethod
     def from_string(cls, s):
-        sreader = StringIO(s)
+        sreader = BytesIO(s)
         kreader = kqml_reader.KQMLReader(sreader)
         return kreader.read_list()
 

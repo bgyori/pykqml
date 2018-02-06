@@ -106,8 +106,8 @@ class KQMLModule(object):
                 (self.inp, self.out)
         else:
             logger.info('Using stdio connection')
-            self.out = sys.stdout
-            self.inp = KQMLReader(sys.stdin)
+            self.out = sys.stdout.buffer
+            self.inp = KQMLReader(sys.stdin.buffer)
 
         self.dispatcher = KQMLDispatcher(self, self.inp, self.name)
 
@@ -314,7 +314,7 @@ class KQMLModule(object):
         logger.error(msg, 'unexpected performative: unregister')
 
     def receive_other_performative(self, msg):
-        self.error_reply(msg, 'unexpected performative: ' + msg)
+        self.error_reply(msg, 'unexpected performative: ' + str(msg))
 
     def handle_exception(self, ex):
         logger.error(str(ex))
@@ -325,7 +325,7 @@ class KQMLModule(object):
         except IOError:
             logger.error('IOError during message sending')
             pass
-        self.out.write('\n')
+        self.out.write(b'\n')
         self.out.flush()
         logger.debug(msg.__repr__())
 

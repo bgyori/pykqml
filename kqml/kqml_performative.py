@@ -1,9 +1,11 @@
-from io import StringIO
+from io import BytesIO
 from kqml import KQMLObject
 from . import kqml_reader
 from . import kqml_list
 from .kqml_token import KQMLToken
 from .kqml_exceptions import KQMLBadPerformativeException
+from .util import safe_decode
+
 
 class KQMLPerformative(KQMLObject):
     def __init__(self, objects):
@@ -58,16 +60,16 @@ class KQMLPerformative(KQMLObject):
         self.data.write(out)
 
     def to_string(self):
-        return self.data.to_string()
+        return safe_decode(self.data.to_string())
 
     @classmethod
     def from_string(cls, s):
-        sreader = StringIO(s)
+        sreader = BytesIO(s.encode())
         kreader = kqml_reader.KQMLReader(sreader)
         return cls(kreader.read_list())
 
     def __str__(self):
-        return self.to_string()
+        return safe_decode(self.to_string())
 
     def __repr__(self):
         return self.data.__repr__()

@@ -1,5 +1,6 @@
 import re
 from kqml import KQMLObject
+from .util import safe_decode
 
 class KQMLToken(KQMLObject):
     def __init__(self, s=None):
@@ -60,7 +61,7 @@ class KQMLToken(KQMLObject):
         return self.data.__getitem__(*args)
 
     def __str__(self):
-        return self.to_string()
+        return safe_decode(self.to_string())
 
     def __repr__(self):
         return self.to_string()
