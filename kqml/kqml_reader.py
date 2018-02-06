@@ -1,12 +1,12 @@
 import io
 import logging
-from kqml_exceptions import *
+from .kqml_exceptions import *
 
-import kqml_list
-import kqml_performative
-from kqml_token import KQMLToken
-from kqml_string import KQMLString
-from kqml_quotation import KQMLQuotation
+from . import kqml_list
+from . import kqml_performative
+from .kqml_token import KQMLToken
+from .kqml_string import KQMLString
+from .kqml_quotation import KQMLQuotation
 
 logger = logging.getLogger('KQMLReader')
 

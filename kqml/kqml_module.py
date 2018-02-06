@@ -4,7 +4,7 @@ import socket
 import logging
 from kqml import KQMLReader, KQMLDispatcher
 from kqml import KQMLList, KQMLPerformative
-from kqml_exceptions import KQMLException
+from .kqml_exceptions import KQMLException
 
 logger = logging.getLogger('KQMLModule')
 

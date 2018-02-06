@@ -1,8 +1,8 @@
 from io import StringIO
-from kqml import KQMLObject
-from kqml_token import KQMLToken
-from kqml_string import KQMLString
-import kqml_reader
+from . import KQMLObject
+from .kqml_token import KQMLToken
+from .kqml_string import KQMLString
+import kqml.kqml_reader as kqml_reader
 
 class KQMLList(KQMLObject):
     def __init__(self, objects=None):
