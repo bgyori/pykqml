@@ -93,7 +93,7 @@ class KQMLList(KQMLObject):
         """
         param = self.get(keyword)
         if param is not None:
-            return param.string_value()
+            return safe_decode(param.string_value())
         return None
 
 
