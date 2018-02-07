@@ -106,8 +106,9 @@ class KQMLModule(object):
                 (self.inp, self.out)
         else:
             logger.info('Using stdio connection')
-            self.out = sys.stdout.buffer
-            self.inp = KQMLReader(sys.stdin.buffer)
+            from _io import BytesIO
+            self.out = BytesIO()
+            self.inp = KQMLReader(BytesIO())
 
         self.dispatcher = KQMLDispatcher(self, self.inp, self.name)
 
