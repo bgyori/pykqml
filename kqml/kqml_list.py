@@ -3,7 +3,7 @@ from . import KQMLObject
 from .kqml_token import KQMLToken
 from .kqml_string import KQMLString
 import kqml.kqml_reader as kqml_reader
-from .util import safe_decode
+from .util import safe_decode, safe_encode
 
 class KQMLList(KQMLObject):
     def __init__(self, objects=None):
@@ -214,6 +214,7 @@ class KQMLList(KQMLObject):
 
     @classmethod
     def from_string(cls, s):
+        s = safe_encode(s)
         sreader = BytesIO(s)
         kreader = kqml_reader.KQMLReader(sreader)
         return kreader.read_list()

@@ -4,7 +4,7 @@ from . import kqml_reader
 from . import kqml_list
 from .kqml_token import KQMLToken
 from .kqml_exceptions import KQMLBadPerformativeException
-from .util import safe_decode
+from .util import safe_decode, safe_encode
 
 
 class KQMLPerformative(KQMLObject):
@@ -64,7 +64,8 @@ class KQMLPerformative(KQMLObject):
 
     @classmethod
     def from_string(cls, s):
-        sreader = BytesIO(s.encode())
+        s = safe_encode(s)
+        sreader = BytesIO(s)
         kreader = kqml_reader.KQMLReader(sreader)
         return cls(kreader.read_list())
 
