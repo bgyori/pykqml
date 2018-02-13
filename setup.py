@@ -8,6 +8,7 @@ setup(name='pykqml',
     author='Benjamin M. Gyori',
     author_email='benjamin_gyori@hms.harvard.edu',
     description='KQML messaging classes in Python.',
+    long_description=open('README.rst', 'r').read(),
     classifiers=[
         'Development Status :: 4 - Beta',
         'Environment :: Console',
