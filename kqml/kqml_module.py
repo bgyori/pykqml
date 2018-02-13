@@ -293,7 +293,7 @@ class KQMLModule(object):
         self.error_reply(msg, 'unexpected performative: eos')
 
     def receive_error(self, msg):
-        logger.error('unexpected performative: error')
+        logger.error('Error received: "%s"' % msg)
 
     def receive_sorry(self, msg):
         logger.error('unexpected performative: sorry')
