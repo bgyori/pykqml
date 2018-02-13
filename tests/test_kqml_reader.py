@@ -17,3 +17,10 @@ def test_read_performative():
     sreader = BytesIO(s)
     kr = KQMLReader(sreader)
     kp = kr.read_performative()
+
+def test_read_performative_utf8():
+    s = '(REQUEST :CONTENT (REQUEST_TYPE :CONTENT "<ekb>\U0001F4A9</ekb>"))'
+    s = s.encode('utf-8')
+    sreader = BytesIO(s)
+    kr = KQMLReader(sreader)
+    kp = kr.read_performative()
