@@ -22,13 +22,17 @@ class KQMLDispatcher(object):
         # FIXME: not handling KQMLException and
         # KQMLBadCharacterException
         except KeyboardInterrupt:
+            logger.info('Keyboard interrupt received')
             self.receiver.receive_eof()
         except EOFError:
+            logger.info('EOF received')
             self.receiver.receive_eof()
         except IOError as ex:
             if not self.shutdown_initiated:
                 self.receiver.handle_exception(ex)
-        except ValueError:
+        except ValueError as e:
+            logger.error('Value error during reading')
+            logger.exception(e)
             return
 
     def warn(self, msg):

@@ -20,16 +20,24 @@ class KQMLReader(object):
 
     def read_char(self):
         ch = self.reader.read(1)
+        ch_int = ch[0]
+        if ch_int >= 192 and ch_int < 224:
+            ch += self.reader.read(1)
+        elif ch_int >= 224 and ch_int < 240:
+            ch += self.reader.read(2)
+        elif ch_int >= 240:
+            ch += self.reader.read(3)
         self.inbuf += ch.decode()
         return ch.decode()
 
     def unget_char(self, ch):
+        nbytes = len(ch.encode())
         # Rewind by 1 relative to current position
-        self.reader.seek(-1, 1)
+        self.reader.seek(-nbytes, 1)
         self.reader.write(ch.encode())
         # Rewind by 1 relative to current position
-        self.reader.seek(-1, 1)
-        self.inbuf = self.inbuf[:-1]
+        self.reader.seek(-nbytes, 1)
+        self.inbuf = self.inbuf[:-nbytes]
 
     def peek_char(self):
         if isinstance(self.reader, io.BufferedReader):
