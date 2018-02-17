@@ -45,3 +45,8 @@ You can create a new KQML messaging agent as
             # ...
             self.reply(msg, reply_msg)
 
+You can run the tests with the following command:
+
+.. code:: python
+
+   python -m unittest discover tests

@@ -1,12 +1,12 @@
 import io
 import logging
-from kqml_exceptions import *
+from .kqml_exceptions import *
 
-import kqml_list
-import kqml_performative
-from kqml_token import KQMLToken
-from kqml_string import KQMLString
-from kqml_quotation import KQMLQuotation
+from . import kqml_list
+from . import kqml_performative
+from .kqml_token import KQMLToken
+from .kqml_string import KQMLString
+from .kqml_quotation import KQMLQuotation
 
 logger = logging.getLogger('KQMLReader')
 
@@ -19,14 +19,16 @@ class KQMLReader(object):
         self.reader.close()
 
     def read_char(self):
-        ch = self.reader.read(1)
+        # bytes -> str
+        ch = self.reader.read(1).decode()
         self.inbuf += ch
         return ch
 
     def unget_char(self, ch):
         # Rewind by 1 relative to current position
         self.reader.seek(-1, 1)
-        self.reader.write(ch)
+        # need bytes!
+        self.reader.write(ch.encode("utf-8"))
         # Rewind by 1 relative to current position
         self.reader.seek(-1, 1)
         self.inbuf = self.inbuf[:-1]

@@ -1,5 +1,7 @@
+from __future__ import absolute_import
 import re
-from kqml import KQMLObject
+from .common import KQMLObject
+from six import string_types
 
 class KQMLToken(KQMLObject):
     def __init__(self, s=None):
@@ -12,7 +14,7 @@ class KQMLToken(KQMLObject):
         return len(self.data)
 
     def equals_ignore_case(self, s):
-        if isinstance(s, KQMLToken) or isinstance(s, basestring):
+        if isinstance(s, KQMLToken) or isinstance(s, string_types):
             return (self.data.lower() == s.lower())
 
     def lower(self):

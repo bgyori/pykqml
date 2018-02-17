@@ -1,22 +1,25 @@
+from six import string_types
 from kqml.kqml_list import KQMLList
 from kqml.kqml_token import KQMLToken
+import unittest
 
-def test_init():
-    kl = KQMLList()
-    assert(kl.data == [])
-    kl = KQMLList('head')
-    assert(kl.data == ['head'])
-    assert(type(kl.data[0] == KQMLToken))
-    kl = KQMLList(['a', 'b'])
-    assert(kl.data == ['a', 'b'])
+class TestKQMLList(unittest.TestCase):
+    def test_init(self):
+        kl = KQMLList()
+        self.assertEqual(kl.data, [])
+        kl = KQMLList('head')
+        self.assertEqual(kl.data, ['head'])
+        self.assertTrue(isinstance(kl.data[0], KQMLToken))
+        kl = KQMLList(['a', 'b'])
+        self.assertEqual(kl.data, ['a', 'b'])
 
-def test_from_string():
-    s = '(FAILURE :reason INVALID_DESCRIPTION)'
-    kl = KQMLList.from_string(s)
-    for obj in kl.data:
-        assert(not(isinstance(obj, basestring)))
+    def test_from_string(self):
+        s = '(FAILURE :reason INVALID_DESCRIPTION)'
+        kl = KQMLList.from_string(s)
+        for obj in kl.data:
+            self.assertFalse(isinstance(obj, string_types))
 
-def test_gets():
-    kl = KQMLList.from_string('(:hello "")')
-    hello = kl.gets('hello')
-    assert(hello == '')
+    def test_gets(self):
+        kl = KQMLList.from_string('(:hello "")')
+        hello = kl.gets('hello')
+        self.assertEqual(hello, '')

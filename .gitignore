@@ -1,1 +1,3 @@
 *.pyc
+pykqml.egg-info
+__pycache__/

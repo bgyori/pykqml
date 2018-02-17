@@ -1,8 +1,9 @@
-import StringIO
-from kqml import KQMLObject
-from kqml_token import KQMLToken
-from kqml_string import KQMLString
-import kqml_reader
+from six import BytesIO, StringIO
+from six import string_types
+from .common import KQMLObject
+from .kqml_token import KQMLToken
+from .kqml_string import KQMLString
+from . import kqml_reader
 
 class KQMLList(KQMLObject):
     def __init__(self, objects=None):
@@ -15,7 +16,7 @@ class KQMLList(KQMLObject):
             for o in objects:
                 self.append(o)
         # If a string is passed, it becomes the "head" of the list
-        elif isinstance(objects, basestring):
+        elif isinstance(objects, string_types):
             self.append(objects)
 
     def __str__(self):
@@ -104,7 +105,7 @@ class KQMLList(KQMLObject):
             If a string is passed, it is instantiated as a
             KQMLToken before being added to the list.
         """
-        if isinstance(obj, basestring):
+        if isinstance(obj, string_types):
             obj = KQMLToken(obj)
         self.data.append(obj)
 
@@ -117,7 +118,7 @@ class KQMLList(KQMLObject):
             If a string is passed, it is instantiated as a
             KQMLToken before being added to the list.
         """
-        if isinstance(obj, basestring):
+        if isinstance(obj, string_types):
             obj = KQMLToken(obj)
         self.data.insert(0, obj)
 
@@ -164,9 +165,9 @@ class KQMLList(KQMLObject):
         """
         if not keyword.startswith(':'):
             keyword = ':' + keyword
-        if isinstance(value, basestring):
+        if isinstance(value, string_types):
             value = KQMLToken(value)
-        if isinstance(keyword, basestring):
+        if isinstance(keyword, string_types):
             keyword = KQMLToken(keyword)
         found = False
         for i, key in enumerate(self.data):
@@ -197,7 +198,7 @@ class KQMLList(KQMLObject):
             kl = KQMLList.from_string('(FAILURE)')
             kl.sets('reason', 'this is a custom string message, not a token')
         """
-        if isinstance(value, basestring):
+        if isinstance(value, string_types):
             value = KQMLString(value)
         self.set(keyword, value)
 
@@ -206,13 +207,13 @@ class KQMLList(KQMLObject):
         out.write(full_str)
 
     def to_string(self):
-        out = StringIO.StringIO()
+        out = StringIO()
         self.write(out)
         return out.getvalue()
 
     @classmethod
     def from_string(cls, s):
-        sreader = StringIO.StringIO(s)
+        sreader = BytesIO(bytes(s.encode("utf-8")))
         kreader = kqml_reader.KQMLReader(sreader)
         return kreader.read_list()
 
@@ -222,7 +223,7 @@ class KQMLList(KQMLObject):
         return KQMLList(self.data[from_idx:to_idx])
 
     def index_of(self, obj):
-        if isinstance(obj, basestring):
+        if isinstance(obj, string_types):
             return self.index_of_string(obj)
         else:
             try:
@@ -243,4 +244,3 @@ class KQMLList(KQMLObject):
             return idx
         except ValueError:
             return -1
-

@@ -1,16 +1,16 @@
-import StringIO
-from kqml import KQMLObject
-import kqml_reader
-import kqml_list
-from kqml_token import KQMLToken
-from kqml_exceptions import KQMLBadPerformativeException
+from six import BytesIO, string_types
+from .common import KQMLObject
+from . import kqml_reader
+from . import kqml_list
+from .kqml_token import KQMLToken
+from .kqml_exceptions import KQMLBadPerformativeException
 
 class KQMLPerformative(KQMLObject):
     def __init__(self, objects):
         if not objects:
             raise KQMLBadPerformativeException('no elements for initialization')
         # If we get a string then we start a list with the string as the head
-        if isinstance(objects, basestring):
+        if isinstance(objects, string_types):
             self.data = kqml_list.KQMLList(objects)
         elif isinstance(objects, kqml_list.KQMLList):
             self._validate(objects)
@@ -62,7 +62,7 @@ class KQMLPerformative(KQMLObject):
 
     @classmethod
     def from_string(cls, s):
-        sreader = StringIO.StringIO(s)
+        sreader = BytesIO(s)
         kreader = kqml_reader.KQMLReader(sreader)
         return cls(kreader.read_list())
 

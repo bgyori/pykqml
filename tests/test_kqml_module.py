@@ -1,5 +1,7 @@
 from kqml import KQMLModule
+import unittest
 
-def test_init():
-    """Tests whether KQMLModule can be initialized."""
-    KQMLModule(testing=True, name='testmodule')
+class TestKQMLModule(unittest.TestCase):
+    def test_init(self):
+        """Tests whether KQMLModule can be initialized."""
+        KQMLModule(testing=True, name='testmodule')
