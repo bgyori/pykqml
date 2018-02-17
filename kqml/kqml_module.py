@@ -2,9 +2,11 @@ import io
 import sys
 import socket
 import logging
-from kqml import KQMLReader, KQMLDispatcher
-from kqml import KQMLList, KQMLPerformative
-from kqml_exceptions import KQMLException
+from .kqml_list import KQMLList
+from .kqml_performative import KQMLPerformative
+from .kqml_reader import KQMLReader
+from .kqml_dispatcher import KQMLDispatcher
+from .kqml_exceptions import KQMLException
 
 logger = logging.getLogger('KQMLModule')
 
