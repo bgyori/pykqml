@@ -26,7 +26,7 @@ use
 
 ::
 
-    pip install pykqml>0.5
+    pip install "pykqml>0.5"
 
 Usage
 =====
@@ -69,3 +69,7 @@ You can create a new KQML messaging agent as
             # ...
             self.reply(msg, reply_msg)
 
+Testing
+=======
+
+You can run all tests by running `nosetests` in the top level folder.
