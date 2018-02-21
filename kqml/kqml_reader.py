@@ -1,12 +1,12 @@
 import io
 import logging
-from kqml_exceptions import *
+from .kqml_exceptions import *
 
-import kqml_list
-import kqml_performative
-from kqml_token import KQMLToken
-from kqml_string import KQMLString
-from kqml_quotation import KQMLQuotation
+from . import kqml_list
+from . import kqml_performative
+from .kqml_token import KQMLToken
+from .kqml_string import KQMLString
+from .kqml_quotation import KQMLQuotation
 
 logger = logging.getLogger('KQMLReader')
 
@@ -20,23 +20,31 @@ class KQMLReader(object):
 
     def read_char(self):
         ch = self.reader.read(1)
-        self.inbuf += ch
-        return ch
+        ch_int = ch[0]
+        if ch_int >= 192 and ch_int < 224:
+            ch += self.reader.read(1)
+        elif ch_int >= 224 and ch_int < 240:
+            ch += self.reader.read(2)
+        elif ch_int >= 240:
+            ch += self.reader.read(3)
+        self.inbuf += ch.decode()
+        return ch.decode()
 
     def unget_char(self, ch):
+        nbytes = len(ch.encode())
         # Rewind by 1 relative to current position
-        self.reader.seek(-1, 1)
-        self.reader.write(ch)
+        self.reader.seek(-nbytes, 1)
+        self.reader.write(ch.encode())
         # Rewind by 1 relative to current position
-        self.reader.seek(-1, 1)
-        self.inbuf = self.inbuf[:-1]
+        self.reader.seek(-nbytes, 1)
+        self.inbuf = self.inbuf[:-nbytes]
 
     def peek_char(self):
         if isinstance(self.reader, io.BufferedReader):
             ch_ = self.reader.peek(1)
             if not ch_:
                 raise EOFError
-            ch = ch_[0]
+            ch = bytes([ch_[0]]).decode()
         else:
             ch = self.read_char()
             self.unget_char(ch)

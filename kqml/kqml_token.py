@@ -1,18 +1,19 @@
 import re
 from kqml import KQMLObject
+from .util import safe_decode
 
 class KQMLToken(KQMLObject):
     def __init__(self, s=None):
         if s is None:
             self.data = ''
         else:
-            self.data = s
+            self.data = safe_decode(s)
 
     def __len__(self):
         return len(self.data)
 
     def equals_ignore_case(self, s):
-        if isinstance(s, KQMLToken) or isinstance(s, basestring):
+        if isinstance(s, KQMLToken) or isinstance(s, str):
             return (self.data.lower() == s.lower())
 
     def lower(self):
@@ -22,7 +23,7 @@ class KQMLToken(KQMLObject):
         return self.data.upper()
 
     def write(self, out):
-        out.write(self.data)
+        out.write(self.data.encode())
 
     def to_string(self):
         return self.data
@@ -60,7 +61,7 @@ class KQMLToken(KQMLObject):
         return self.data.__getitem__(*args)
 
     def __str__(self):
-        return self.to_string()
+        return safe_decode(self.to_string())
 
     def __repr__(self):
         return self.to_string()

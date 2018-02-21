@@ -1,4 +1,4 @@
-import StringIO
+from io import StringIO
 from kqml import KQMLObject
 
 class KQMLQuotation(KQMLObject):
@@ -17,6 +17,6 @@ class KQMLQuotation(KQMLObject):
         self.kqml_object.write(out)
 
     def to_string(self):
-        out = StringIO.StringIO()
+        out = StringIO()
         self.write(out)
         return out.getvalue()

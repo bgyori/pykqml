@@ -1,8 +1,38 @@
 PyKQML
 ======
 
-PyKQML is an implementation of KQML messaging in Python. It consists of
-the following classes:
+PyKQML is an implementation of KQML messaging in Python.
+
+Installation
+============
+
+PyKQML can be installed as
+
+::
+
+    pip install pykqml
+
+Note that releases of PyKQML up to 0.5 work in Python 2 only, whereas
+releases after 0.5 work in Python 3 only.
+
+To install for Python 2, use:
+
+::
+
+    pip install pykqml==0.5
+
+To install for Python 3 (or force an upgrade to a compatible version),
+use
+
+::
+
+    pip install pykqml>0.5
+
+Usage
+=====
+
+PyKQML implements the following KQML classes, which allow constructing
+and manipulating KQML messages programmatically:
 
 ::
 
@@ -14,12 +44,6 @@ the following classes:
     KQMLReader
     KQMLDispatcher
     KQMLModule
-
-PyKQML can be installed as
-
-::
-
-    pip install pykqml
 
 You can import KQML classes as, for instance,
 

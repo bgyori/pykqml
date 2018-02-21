@@ -9,7 +9,7 @@ def test_write():
     s = 'hello\nhe"ll"o'
     ks = KQMLString(s)
     ss = ks.to_string()
-    assert(ss == '"hello\nhe\\"ll\\"o"')
+    assert ss == '"hello\nhe\\"ll\\"o"'
     ss = ks.string_value()
     assert(ss == s)
 

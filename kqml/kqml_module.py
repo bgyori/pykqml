@@ -4,7 +4,7 @@ import socket
 import logging
 from kqml import KQMLReader, KQMLDispatcher
 from kqml import KQMLList, KQMLPerformative
-from kqml_exceptions import KQMLException
+from .kqml_exceptions import KQMLException
 
 logger = logging.getLogger('KQMLModule')
 
@@ -106,8 +106,8 @@ class KQMLModule(object):
                 (self.inp, self.out)
         else:
             logger.info('Using stdio connection')
-            self.out = sys.stdout
-            self.inp = KQMLReader(sys.stdin)
+            self.out = io.BytesIO()
+            self.inp = KQMLReader(io.BytesIO())
 
         self.dispatcher = KQMLDispatcher(self, self.inp, self.name)
 
@@ -293,7 +293,7 @@ class KQMLModule(object):
         self.error_reply(msg, 'unexpected performative: eos')
 
     def receive_error(self, msg):
-        logger.error('unexpected performative: error')
+        logger.error('Error received: "%s"' % msg)
 
     def receive_sorry(self, msg):
         logger.error('unexpected performative: sorry')
@@ -314,7 +314,7 @@ class KQMLModule(object):
         logger.error(msg, 'unexpected performative: unregister')
 
     def receive_other_performative(self, msg):
-        self.error_reply(msg, 'unexpected performative: ' + msg)
+        self.error_reply(msg, 'unexpected performative: ' + str(msg))
 
     def handle_exception(self, ex):
         logger.error(str(ex))
@@ -325,7 +325,7 @@ class KQMLModule(object):
         except IOError:
             logger.error('IOError during message sending')
             pass
-        self.out.write('\n')
+        self.out.write(b'\n')
         self.out.flush()
         logger.debug(msg.__repr__())
 
