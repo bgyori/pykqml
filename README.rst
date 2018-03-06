@@ -51,22 +51,52 @@ You can import KQML classes as, for instance,
 
     from kqml import KQMLList
 
-You can create a new KQML messaging agent as
+You can create a new KQML messaging agent in the context of the TRIPS
+system as
 
 .. code:: python
 
     from kqml import KQMLModule
 
     class MyAgent(KQMLModule):
-        def __init__(self, argv):
-            # Initialize the agent
-            super(MyAgent, self).__init__(argv)
+        name = "MyAgent" # This is the name of the agent to register with
+
+        def __init__(self, **kwargs):
+            # Call the parent class' constructor which sends a registration
+            # message, setting the agent's name to be recognized by the
+            # Facilitator.
+            super(MyAgent, self).__init__(name=self.name, **kwargs)
+
+            # Subscribe to REQUESTs of interest. The list will change
+            # depending on the role of the agent
+            for req in ('what-next', 'commit', 'evaluate'):
+                self.subscribe_request(req)
+
+            # Subscribe to TELLs of interest if needed. This list will change
+            # depending on the role of the agent
+            for tell in ('log-speechact', ):
+                self.subscribe_tell(tell)
+
+            # Now signal that the agent is ready to receive messages
             self.ready()
-            super(MyAgent, self).start()
+
+            # Finally, start the listener for incoming messages
+            self.start()
+
 
         def receive_request(self, msg, content):
-            # Handle request and construct a reply_msg
-            # ...
+            # First, figure out what kind of request this is
+            task = content.head().upper()
+            # Here you typically decide what to do based on the
+            # type of request.
+
+            # Construct reply message's content
+            reply_content = KQMLList()
+            # Set whatever needs to be set in the reply content
+
+            # Finally, wrap the content in a message and reply
+            reply_msg = KQMLPerformative('reply')
+            reply_msg.set('content', reply_content)
             self.reply(msg, reply_msg)
 
 Testing
