@@ -180,7 +180,7 @@ class KQMLModule(object):
             return True
         except socket.error as e:
             if verbose:
-                logger.exception(e)
+                logger.error(e)
             return False
 
     def register(self):
