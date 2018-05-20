@@ -164,19 +164,10 @@ class KQMLModule(object):
         try:
             self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.socket.connect((host, port))
-            sfn = self.socket.makefile().fileno()
-            if use_msvcrt:
-                sfd = msvcrt.open_osfhandle(sfn, os.O_APPEND)
-                fio = io.FileIO(sfd, mode='w')
-                self.out = io.BufferedWriter(fio)
-                sfd = msvcrt.open_osfhandle(sfn, os.O_RDONLY)
-                fio = io.FileIO(sfd, mode='r')
-                self.inp = KQMLReader(io.BufferedReader(fio))
-            else:
-                fio = io.FileIO(sfn, mode='w')
-                self.out = io.BufferedWriter(fio)
-                fio = io.FileIO(sfn, mode='r')
-                self.inp = KQMLReader(io.BufferedReader(fio))
+            sw = socket.SocketIO(self.socket, 'w')
+            self.out = io.BufferedWriter(sw)
+            sr = socket.SocketIO(self.socket, 'r')
+            self.inp = KQMLReader(io.BufferedReader(sr))
             return True
         except socket.error as e:
             if verbose:

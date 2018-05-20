@@ -89,7 +89,7 @@ class KQMLDispatcher(object):
             for cmt in msg_only_types:
                 self.receiver.__getattribute__(method_name)(msg)
         else:
-            self.receiver.recieve_other_performative(msg)
+            self.receiver.receive_other_performative(msg)
 
         return
 
