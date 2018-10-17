@@ -1,13 +1,18 @@
 import json
 import re
 
-from .kqml_string import KQMLString
 from .kqml_list import KQMLList
 from .kqml_token import KQMLToken
 from .kqml_exceptions import KQMLException
 
 
 def cl_from_json(json_obj):
+    """Read a json into a KQMLList object, recursively usng the CLJson paradigm.
+
+    Note: both false an None are mapped to NIL. This means parsing back will
+    not have exactly the same result as the original json dict/list, in some
+    cases.
+    """
     if isinstance(json_obj, str):
         json_obj = json.loads(json_obj)
     elif isinstance(json_obj, bytes):
@@ -44,6 +49,11 @@ def _cl_from_json(json_obj):
 
 
 def cl_to_json(kqml_list):
+    """Recursively convert a KQMLList into a json-style dict/list.
+
+    Note: Because NIL is used as both None and False in lisp, all NIL is
+    returned as None, even if the value was intended, or originally, False.
+    """
     if not isinstance(kqml_list, KQMLList):
         raise ValueError("Only a KQMLList might be converted into json.")
     return _cl_to_json(kqml_list)
