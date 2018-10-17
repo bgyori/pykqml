@@ -1,6 +1,29 @@
 from kqml import cl_json, KQMLList
 
 
+def _equal(json_val, back_json_val):
+    if json_val is False and back_json_val is None:
+        return True
+    if type(json_val) != type(back_json_val):
+        return False
+
+    if isinstance(json_val, dict):
+        ret = True
+        for key, value in json_val.items():
+            if not _equal(value, back_json_val[key]):
+                ret = False
+                break
+    elif isinstance(json_val, list):
+        ret = True
+        for i, value in enumerate(json_val):
+            if not _equal(value, back_json_val[i]):
+                ret = False
+                break
+    else:
+        ret = (json_val == back_json_val)
+    return ret
+
+
 def test_parse():
     json_dict = {'a': 1, 'b': 2,
                  'c': ['foo', {'bar': None, 'done': False}],
@@ -10,4 +33,4 @@ def test_parse():
     assert len(res) == 2*len(json_dict.keys())
     back_dict = cl_json.cl_to_json(res)
     assert len(back_dict) == len(json_dict)
-    # TODO: Should test for equality.
+    assert _equal(json_dict, back_dict)
