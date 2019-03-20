@@ -13,7 +13,7 @@ PyKQML can be installed as
     pip install pykqml
 
 Note that releases of PyKQML up to 0.5 work in Python 2 only, whereas
-releases after 0.5 work in Python 3 only.
+releases above and including 1.0 work in Python 3 only.
 
 To install for Python 2, use:
 
