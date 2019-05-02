@@ -1,6 +1,7 @@
 import json
 import re
 
+from kqml import KQMLString
 from .kqml_list import KQMLList
 from .kqml_token import KQMLToken
 from .kqml_exceptions import KQMLException
@@ -32,7 +33,7 @@ def _cl_from_json(json_obj):
         for key, val in json_obj.items():
             ret.set(key, _cl_from_json(val))
     elif isinstance(json_obj, str):
-        ret = KQMLToken(json_obj)
+        ret = KQMLString(json_obj)
     elif isinstance(json_obj, bool):
         if json_obj:
             ret = KQMLToken('T')
@@ -87,6 +88,14 @@ def _cl_to_json(kqml_thing):
         elif s == 'T':
             ret = True
         elif s.isdigit():
+            ret = int(s)
+        elif s.count('.') == 1 and all(seg.isdigit() for seg in s.split('.')):
+            ret = float(s)
+        else:
+            ret = s
+    elif isinstance(kqml_thing, KQMLString):
+        s = kqml_thing.string_value()
+        if s.isdigit():
             ret = int(s)
         elif s.count('.') == 1 and all(seg.isdigit() for seg in s.split('.')):
             ret = float(s)
