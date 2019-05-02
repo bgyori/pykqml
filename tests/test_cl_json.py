@@ -34,3 +34,16 @@ def test_parse():
     back_dict = cl_json.cl_to_json(res)
     assert len(back_dict) == len(json_dict)
     assert _equal(json_dict, back_dict)
+
+
+def test_more_complex_parse():
+    json_dict = {'a': 1, 'B': 2,
+                 'c': ['f oo -', {'bar': None, 'done': False}],
+                 'This is-Json': True}
+    res = cl_json._cl_from_json(json_dict)
+    print(res.to_string())
+    assert isinstance(res, KQMLList)
+    assert len(res) == 2*len(json_dict.keys())
+    back_dict = cl_json.cl_to_json(res)
+    assert len(back_dict) == len(json_dict)
+    assert _equal(json_dict, back_dict)
