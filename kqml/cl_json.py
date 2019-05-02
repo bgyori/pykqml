@@ -25,18 +25,35 @@ def cl_from_json(json_obj):
 
 def _key_from_string(key):
     patts = [
-        ('([A-Z0-9]+)_([A-Z0-9]+)',
+        # Replace a pair of upper-case words with an underscore. Make
+        # lowercase so that they don't get picked up in future searches.
+        (['([A-Z0-9]+)_([A-Z0-9]+)'],
          lambda m: '+%s-%s+' % tuple(s.lower() for s in m.groups())),
-        ('(?!^|_)([A-Z][a-z])', '-\\1'),
-        ('([A-Z0-9]{2,})', '+\\1+'),
-        ('^([A-Z])', '*\\1'),
-        ('_([A-Z]{2,})', '*\\1'),
-        ('([a-z])_([a-z0-9\+])', '\\1--\\2'),
-        ('([a-z])_([A-Z])', '\\1--*\\2')
+
+        # Add a * before upper case at the beginning of lines or after an
+        # underscore.
+        (['^([A-Z][a-z])', '_([A-Z][a-z])'],
+         lambda m: m.group(0).replace(m.group(1), '') + '*'
+                   + m.group(1).lower()),
+
+        # Replace Upper case not at the beginning or after an underscore.
+        (['([A-Z][a-z])'], lambda m: '-' + m.group(1).lower()),
+
+        # Replace groups of upper case words with surrounding pluses.
+        (['([A-Z0-9]{2,})'], lambda m: '+%s+' % m.group(1).lower()),
+
+        # Convert some other special underscores to --
+        (['([a-z])_([a-z0-9\+*])'], '\\1--\\2'),
     ]
-    for patt, repl in patts:
-        key = re.sub(patt, repl, key)
-        print(key)
+    for patts, repl in patts:
+        for patt in patts:
+            try:
+                new_key = re.sub(patt, repl, key)
+            except Exception:
+                print(patt, repl, key)
+                raise
+            print(new_key, re.findall(patt, key))
+            key = new_key
     return key.upper()
 
 
