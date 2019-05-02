@@ -23,6 +23,23 @@ def cl_from_json(json_obj):
     return _cl_from_json(json_obj)
 
 
+def _key_from_string(key):
+    patts = [
+        ('([A-Z0-9]+)_([A-Z0-9]+)',
+         lambda m: '+%s-%s+' % tuple(s.lower() for s in m.groups())),
+        ('(?!^|_)([A-Z][a-z])', '-\\1'),
+        ('([A-Z0-9]{2,})', '+\\1+'),
+        ('^([A-Z])', '*\\1'),
+        ('_([A-Z]{2,})', '*\\1'),
+        ('([a-z])_([a-z0-9\+])', '\\1--\\2'),
+        ('([a-z])_([A-Z])', '\\1--*\\2')
+    ]
+    for patt, repl in patts:
+        key = re.sub(patt, repl, key)
+        print(key)
+    return key.upper()
+
+
 def _cl_from_json(json_obj):
     if isinstance(json_obj, list):
         ret = KQMLList()
