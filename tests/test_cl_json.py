@@ -53,3 +53,32 @@ def test_more_complex_parse():
     back_dict = cl_json.cl_to_json(res)
     assert len(back_dict) == len(json_dict)
     assert _equal(json_dict, back_dict)
+
+
+def _check_convert(inp, exp):
+    cl_key = cl_json._key_from_string(inp)
+    assert cl_key == exp, (cl_key, exp)
+
+
+def test_camelcase():
+    _check_convert('helloKey', 'HELLO-KEY')
+
+
+def test_camel_starts_with_uppercase():
+    _check_convert('HiStartsWithUpperCase', '*HI-STARTS-WITH-UPPER-CASE')
+
+
+def test_join_by_underscore():
+    _check_convert('joined_by_underscore', 'JOINED--BY--UNDERSCORE')
+
+
+def test_json_all_caps():
+    _check_convert('JSONAllCapitals', '+JSON+-ALL-CAPITALS')
+
+
+def test_json_two_all_caps_words():
+    _check_convert('TWO_WORDS', '+TWO-WORDS+')
+
+
+def test_hell():
+    _check_convert('camelCase_Mixed_4_PARTS', 'CAMEL-CASE--*MIXED--+4-PARTS+')
