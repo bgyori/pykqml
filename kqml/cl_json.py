@@ -94,6 +94,20 @@ def cl_to_json(kqml_list):
     return _cl_to_json(kqml_list)
 
 
+def _string_from_key(s):
+    s = s.lower()
+    print('BACK:', s)
+    s = s.replace('--', '_')
+    print('BACK:', s)
+    s = re.sub('\*([a-z])', lambda m: m.group(1).upper(), s)
+    print('BACK:', s)
+    s = re.sub('\+([a-z0-9-]+)\+', lambda m: m.group(1).upper().replace('-', '_'), s)
+    print('BACK:', s)
+    s = re.sub('-([a-z])', lambda m: m.group(1).upper(), s)
+    print('BACK:', s)
+    return s
+
+
 def _cl_to_json(kqml_thing):
     if isinstance(kqml_thing, KQMLList):
         possible_keys = re.findall(':(\w+)', kqml_thing.to_string())
