@@ -58,6 +58,8 @@ def test_more_complex_parse():
 def _check_convert(inp, exp):
     cl_key = cl_json._key_from_string(inp)
     assert cl_key == exp, (cl_key, exp)
+    original = cl_json._string_from_key(cl_key)
+    assert original == inp, (original, inp)
 
 
 def test_camelcase():
