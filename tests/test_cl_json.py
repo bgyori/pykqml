@@ -39,60 +39,56 @@ def _equal(json_val, back_json_val, strict=False):
     return ret
 
 
+EASY_JSON = {'a': 1, 'b': 2, 'number': '12',
+             'c': ['foo', {'bar': None, 'done': False}],
+             'this_is_json': True}
+HARD_JSON = {'a': 1, 'B': 2, 'number1': '12',
+             'c': ['f oo -_?+@(*^&@#^$', {'Bar': None, 'DONE': False}],
+             'This_isJson': True}
+
+
 def test_simple_parse():
     converter = CLJsonConverter()
-    json_dict = {'a': 1, 'b': 2,
-                 'c': ['foo', {'bar': None, 'done': False}],
-                 'this_is_json': True}
-    res = converter.cl_from_json(json_dict)
+    res = converter.cl_from_json(EASY_JSON)
     print('CL JSON Result:', res.to_string())
     assert isinstance(res, KQMLList)
-    assert len(res) == 2*len(json_dict.keys())
+    assert len(res) == 2*len(EASY_JSON.keys())
     back_dict = converter.cl_to_json(res)
-    assert len(back_dict) == len(json_dict)
-    assert _equal(json_dict, back_dict)
+    assert len(back_dict) == len(EASY_JSON)
+    assert _equal(EASY_JSON, back_dict)
 
 
 def test_more_complex_parse():
     converter = CLJsonConverter()
-    json_dict = {'a': 1, 'B': 2,
-                 'c': ['f oo -_?+@(*^&@#^$', {'Bar': None, 'DONE': False}],
-                 'This_isJson': True}
-    res = converter.cl_from_json(json_dict)
+    res = converter.cl_from_json(HARD_JSON)
     print("CL JSON Result:", res.to_string())
     assert isinstance(res, KQMLList)
-    assert len(res) == 2*len(json_dict.keys())
+    assert len(res) == 2*len(HARD_JSON.keys())
     back_dict = converter.cl_to_json(res)
-    assert len(back_dict) == len(json_dict)
-    assert _equal(json_dict, back_dict)
+    assert len(back_dict) == len(HARD_JSON)
+    assert _equal(HARD_JSON, back_dict)
 
 
 def test_simple_parse_w_token_bools():
     converter = CLJsonConverter(True)
-    json_dict = {'a': 1, 'b': 2,
-                 'c': ['foo', {'bar': None, 'done': False}],
-                 'this_is_json': True}
-    res = converter.cl_from_json(json_dict)
+    res = converter.cl_from_json(EASY_JSON)
     print('CL JSON Result:', res.to_string())
     assert isinstance(res, KQMLList)
-    assert len(res) == 2*len(json_dict.keys())
+    assert len(res) == 2*len(EASY_JSON.keys())
     back_dict = converter.cl_to_json(res)
-    assert len(back_dict) == len(json_dict)
-    assert _equal(json_dict, back_dict, strict=True)
+    assert len(back_dict) == len(EASY_JSON)
+    assert _equal(EASY_JSON, back_dict, strict=True)
 
 
 def test_more_complex_parse_w_token_bools():
     converter = CLJsonConverter(True)
-    json_dict = {'a': 1, 'B': 2,
-                 'c': ['f oo -_?+@(*^&@#^$', {'Bar': None, 'DONE': False}],
-                 'This_isJson': True}
-    res = converter.cl_from_json(json_dict)
+    res = converter.cl_from_json(HARD_JSON)
     print("CL JSON Result:", res.to_string())
     assert isinstance(res, KQMLList)
-    assert len(res) == 2*len(json_dict.keys())
+    assert len(res) == 2*len(HARD_JSON.keys())
     back_dict = converter.cl_to_json(res)
-    assert len(back_dict) == len(json_dict)
-    assert _equal(json_dict, back_dict, strict=True)
+    assert len(back_dict) == len(HARD_JSON)
+    assert _equal(HARD_JSON, back_dict, strict=True)
 
 
 def _check_convert(inp, exp):
