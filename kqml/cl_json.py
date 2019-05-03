@@ -50,7 +50,6 @@ def _key_from_string(key):
             except Exception:
                 print("Exeption in key_from_string:", patt.pattern, repl, key)
                 raise
-            print('FORE:', new_key, patt.findall(key))
             key = new_key
     return key.upper()
 
@@ -110,10 +109,8 @@ CL_TO_JSON_PATTS = [
 
 def _string_from_key(s):
     s = s.lower()
-    print('BACK:', s)
     for patt, repl in CL_TO_JSON_PATTS:
         new_s = patt.sub(repl, s)
-        print('BACK:', new_s, patt.findall(s))
         s = new_s
     return s
 
