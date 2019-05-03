@@ -66,6 +66,10 @@ def test_camelcase():
     _check_convert('helloKey', 'HELLO-KEY')
 
 
+def test_single_capital_letter():
+    _check_convert('B', '+B+')
+
+
 def test_camel_starts_with_uppercase():
     _check_convert('HiStartsWithUpperCase', '*HI-STARTS-WITH-UPPER-CASE')
 
