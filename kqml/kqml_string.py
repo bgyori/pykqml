@@ -2,7 +2,8 @@ from io import BytesIO
 from kqml import KQMLObject
 from .util import safe_decode
 
-class KQMLString(object):
+
+class KQMLString(KQMLObject):
     def __init__(self, data=None):
         if data is None:
             self.data = ''
@@ -47,4 +48,3 @@ class KQMLString(object):
 
     def __getitem__(self, *args):
         return self.data.__getitem__(*args)
-
