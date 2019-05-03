@@ -1,6 +1,7 @@
 import sys
 
 from kqml import cl_json, KQMLList
+from kqml.cl_json import CLJsonConverter
 
 
 def _equal(json_val, back_json_val):
@@ -33,27 +34,29 @@ def _equal(json_val, back_json_val):
 
 
 def test_simple_parse():
+    converter = CLJsonConverter()
     json_dict = {'a': 1, 'b': 2,
                  'c': ['foo', {'bar': None, 'done': False}],
                  'this_is_json': True}
-    res = cl_json._cl_from_json(json_dict)
+    res = converter.cl_from_json(json_dict)
     print('CL JSON Result:', res.to_string())
     assert isinstance(res, KQMLList)
     assert len(res) == 2*len(json_dict.keys())
-    back_dict = cl_json.cl_to_json(res)
+    back_dict = converter.cl_to_json(res)
     assert len(back_dict) == len(json_dict)
     assert _equal(json_dict, back_dict)
 
 
 def test_more_complex_parse():
+    converter = CLJsonConverter()
     json_dict = {'a': 1, 'B': 2,
                  'c': ['f oo -_?+@(*^&@#^$', {'Bar': None, 'DONE': False}],
                  'This_isJson': True}
-    res = cl_json._cl_from_json(json_dict)
+    res = converter.cl_from_json(json_dict)
     print("CL JSON Result:", res.to_string())
     assert isinstance(res, KQMLList)
     assert len(res) == 2*len(json_dict.keys())
-    back_dict = cl_json.cl_to_json(res)
+    back_dict = converter.cl_to_json(res)
     assert len(back_dict) == len(json_dict)
     assert _equal(json_dict, back_dict)
 
