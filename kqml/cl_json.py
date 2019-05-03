@@ -100,7 +100,9 @@ class CLJsonConverter(object):
             if s == 'NIL':
                 # This could be either false or None. Because None will almost
                 # always have the same meaning as False in pep-8 compliant
-                # python, but not vice-versa, we choose None.
+                # python, but not vice-versa, we choose None. To avoid this,
+                # you can set `token_bools` to True on your converter class,
+                # and True will be mapped to the token TRUE and False to FALSE.
                 ret = None
             elif (not self.token_bools and s == 'T') \
                     or (self.token_bools and s == 'TRUE'):
