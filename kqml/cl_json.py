@@ -74,17 +74,17 @@ class CLJsonConverter(object):
 
             # Determine the true keys by checking we can actually get something
             # from them.
-            true_key_values = []
+            true_key_values = {}
             for k in possible_keys:
                 val = kqml_thing.get(k)
                 if val is not None:
-                    true_key_values.append((k, val))
+                    true_key_values[k] = val
 
             # Extract the return value.
             if len(true_key_values) == len(kqml_thing)/2:
                 # It's a dict!
                 ret = {}
-                for key, val in true_key_values:
+                for key, val in true_key_values.items():
                     ret[_string_from_key(key)] = self._cl_to_json(val)
             elif not len(true_key_values):
                 # It's a list!
