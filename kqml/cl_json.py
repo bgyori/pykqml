@@ -23,36 +23,34 @@ def cl_from_json(json_obj):
     return _cl_from_json(json_obj)
 
 
+JSON_TO_CL_PATTS = [
+    # Add a * before upper case at the beginning of lines or after an
+    # underscore.
+    ([re.compile('^([A-Z][a-z])'), re.compile('_([A-Z][a-z])')],
+     lambda m: m.group(0).replace(m.group(1), '') + '*'
+               + m.group(1).lower()),
+
+    # Replace Upper case not at the beginning or after an underscore.
+    ([re.compile('([A-Z][a-z])')], lambda m: '-' + m.group(1).lower()),
+
+    # Replace groups of upper case words with surrounding pluses.
+    ([re.compile('([A-Z0-9]+[A-Z0-9_]*[A-Z0-9]*)')],
+     lambda m: '+%s+' % m.group(1).lower().replace('_', '-')),
+
+    # Convert some other special underscores to --
+    ([re.compile('([a-z])_([a-z0-9\+*])')], '\\1--\\2'),
+]
+
+
 def _key_from_string(key):
-    patts = [
-        # Replace a pair of upper-case words with an underscore. Make
-        # lowercase so that they don't get picked up in future searches.
-        (['([A-Z0-9]+)_([A-Z0-9]+)'],
-         lambda m: '+%s-%s+' % tuple(s.lower() for s in m.groups())),
-
-        # Add a * before upper case at the beginning of lines or after an
-        # underscore.
-        (['^([A-Z][a-z])', '_([A-Z][a-z])'],
-         lambda m: m.group(0).replace(m.group(1), '') + '*'
-                   + m.group(1).lower()),
-
-        # Replace Upper case not at the beginning or after an underscore.
-        (['([A-Z][a-z])'], lambda m: '-' + m.group(1).lower()),
-
-        # Replace groups of upper case words with surrounding pluses.
-        (['([A-Z0-9]{2,})'], lambda m: '+%s+' % m.group(1).lower()),
-
-        # Convert some other special underscores to --
-        (['([a-z])_([a-z0-9\+*])'], '\\1--\\2'),
-    ]
-    for patts, repl in patts:
+    for patts, repl in JSON_TO_CL_PATTS:
         for patt in patts:
             try:
-                new_key = re.sub(patt, repl, key)
+                new_key = patt.sub(repl, key)
             except Exception:
-                print(patt, repl, key)
+                print("Exeption in key_from_string:", patt.pattern, repl, key)
                 raise
-            print(new_key, re.findall(patt, key))
+            print('FORE:', new_key, patt.findall(key))
             key = new_key
     return key.upper()
 
@@ -94,17 +92,29 @@ def cl_to_json(kqml_list):
     return _cl_to_json(kqml_list)
 
 
+CL_TO_JSON_PATTS = [
+    # Replacy -- with _
+    (re.compile('(--)'), '_'),
+
+    # Replace *a with A
+    (re.compile('\*([a-z])'), lambda m: m.group(1).upper()),
+
+    # Replace +abc-d+ with ABC_D
+    (re.compile('\+([a-z0-9-]+)\+'),
+     lambda m: m.group(1).upper().replace('-', '_')),
+
+    # Replace foo-bar with fooBar
+    (re.compile('-([a-z])'), lambda m: m.group(1).upper())
+]
+
+
 def _string_from_key(s):
     s = s.lower()
     print('BACK:', s)
-    s = s.replace('--', '_')
-    print('BACK:', s)
-    s = re.sub('\*([a-z])', lambda m: m.group(1).upper(), s)
-    print('BACK:', s)
-    s = re.sub('\+([a-z0-9-]+)\+', lambda m: m.group(1).upper().replace('-', '_'), s)
-    print('BACK:', s)
-    s = re.sub('-([a-z])', lambda m: m.group(1).upper(), s)
-    print('BACK:', s)
+    for patt, repl in CL_TO_JSON_PATTS:
+        new_s = patt.sub(repl, s)
+        print('BACK:', new_s, patt.findall(s))
+        s = new_s
     return s
 
 
