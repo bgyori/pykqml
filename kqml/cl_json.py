@@ -63,7 +63,7 @@ def _cl_from_json(json_obj):
     elif isinstance(json_obj, dict):
         ret = KQMLList()
         for key, val in json_obj.items():
-            ret.set(key, _cl_from_json(val))
+            ret.set(_key_from_string(key), _cl_from_json(val))
     elif isinstance(json_obj, str):
         ret = KQMLString(json_obj)
     elif isinstance(json_obj, bool):
@@ -120,22 +120,32 @@ def _string_from_key(s):
 
 def _cl_to_json(kqml_thing):
     if isinstance(kqml_thing, KQMLList):
-        possible_keys = re.findall(':(\w+)', kqml_thing.to_string())
-        true_keys = [k for k in possible_keys if kqml_thing.get(k) is not None]
-        if len(true_keys) == len(kqml_thing)/2:
+        # Find all possible keys (things that start with ":")
+        possible_keys = re.findall(':([^\s]+)', kqml_thing.to_string())
+
+        # Determine the true keys by checking we can actually get something
+        # from them.
+        true_key_values = []
+        for k in possible_keys:
+            val = kqml_thing.get(k)
+            if val is not None:
+                true_key_values.append((k, val))
+
+        # Extract the return value.
+        if len(true_key_values) == len(kqml_thing)/2:
             # It's a dict!
             ret = {}
-            for key in true_keys:
-                ret[key] = _cl_to_json(kqml_thing.get(key))
-        elif not len(true_keys):
+            for key, val in true_key_values:
+                ret[_string_from_key(key)] = _cl_to_json(val)
+        elif not len(true_key_values):
             # It's a list!
             ret = []
             for item in kqml_thing:
                 ret.append(_cl_to_json(item))
         else:
             # It's not valid for json.
-            raise KQMLException("Cannot convert %s into json."
-                                % kqml_thing.to_string())
+            raise KQMLException("Cannot convert %s into json, neither list "
+                                "nor dict." % kqml_thing.to_string())
     elif isinstance(kqml_thing, KQMLToken):
         s = kqml_thing.to_string()
         if s == 'NIL':
