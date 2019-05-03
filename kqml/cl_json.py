@@ -117,14 +117,7 @@ class CLJsonConverter(object):
             else:
                 ret = s
         elif isinstance(kqml_thing, KQMLString):
-            s = kqml_thing.string_value()
-            if s.isdigit():
-                ret = int(s)
-            elif s.count('.') == 1 and all(seg.isdigit()
-                                           for seg in s.split('.')):
-                ret = float(s)
-            else:
-                ret = s
+            ret = kqml_thing.string_value()
         else:
             raise KQMLException("Unexpected value %s of type %s."
                                 % (kqml_thing, type(kqml_thing)))
