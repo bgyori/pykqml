@@ -79,7 +79,7 @@ class KQMLModule(object):
     def __init__(self, argv=None, **kwargs):
         defaults = dict(host='localhost', port=6200, is_application=False,
                         testing=False, socket=None, name=None, group_name=None,
-                        scan_for_port=False, debug=False)
+                        scan_for_port=False, debug=False, do_register=True)
         self.dispatcher = None
         self.MAX_PORT_TRIES = 100
         self.reply_id_counter = 1
@@ -121,7 +121,8 @@ class KQMLModule(object):
 
         self.dispatcher = KQMLDispatcher(self, self.inp, self.name)
 
-        self.register()
+        if self.do_register:
+            self.register()
 
     def start(self):
         if not self.testing:
