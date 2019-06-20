@@ -1,5 +1,8 @@
 import logging
-logger = logging.getLogger('KQMLDispatcher')
+from .kqml_exceptions import StopWaitingSignal
+
+
+logger = logging.getLogger(__name__)
 
 
 class KQMLDispatcher(object):
@@ -19,8 +22,10 @@ class KQMLDispatcher(object):
             while True:
                 msg = self.reader.read_performative()
                 self.dispatch_message(msg)
-        # FIXME: not handling KQMLException and
-        # KQMLBadCharacterException
+        # This signal allows the dispatcher to stop blocking and return without
+        # closing the connection to the socket and exiting
+        except StopWaitingSignal:
+            return
         except KeyboardInterrupt:
             logger.info('Keyboard interrupt received')
             self.receiver.receive_eof()
@@ -34,9 +39,6 @@ class KQMLDispatcher(object):
             logger.error('Value error during reading')
             logger.exception(e)
             return
-
-    def warn(self, msg):
-        logger.warning(msg)
 
     def shutdown(self):
         self.shutdown_initiated = True

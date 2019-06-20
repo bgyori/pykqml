@@ -5,9 +5,9 @@ import socket
 import logging
 from kqml import KQMLReader, KQMLDispatcher
 from kqml import KQMLList, KQMLPerformative
-from .kqml_exceptions import KQMLException
+from .kqml_exceptions import KQMLException, StopWaitingSignal
 
-logger = logging.getLogger('KQMLModule')
+logger = logging.getLogger(__name__)
 
 
 # On Windows, sockets need to be created via the msvcrt
@@ -202,6 +202,9 @@ class KQMLModule(object):
             if self.dispatcher is not None:
                 self.dispatcher.shutdown()
             sys.exit(n)
+
+    def stop_waiting(self):
+        raise StopWaitingSignal()
 
     def receive_eof(self):
         self.exit(0)

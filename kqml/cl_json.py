@@ -23,7 +23,8 @@ class CLJsonConverter(object):
         elif isinstance(json_obj, bytes):
             json_obj = json.loads(json_obj.decode('utf-8'))
         elif not isinstance(json_obj, list) and not isinstance(json_obj, dict):
-            raise ValueError("Input must be list, dict, or string/bytes json.")
+            raise ValueError("Input must be list, dict, or string/bytes "
+                             "json, got %s." % type(json_obj))
         return self._cl_from_json(json_obj)
 
     def _cl_from_json(self, json_obj):
@@ -64,7 +65,8 @@ class CLJsonConverter(object):
         returned as None, even if the value was intended, or originally, False.
         """
         if not isinstance(kqml_list, KQMLList):
-            raise ValueError("Only a KQMLList might be converted into json.")
+            raise ValueError("Only a KQMLList might be converted into json, "
+                             "got %s." % type(kqml_list))
         return self._cl_to_json(kqml_list)
 
     def _cl_to_json(self, kqml_thing):

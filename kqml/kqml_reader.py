@@ -8,7 +8,8 @@ from .kqml_token import KQMLToken
 from .kqml_string import KQMLString
 from .kqml_quotation import KQMLQuotation
 
-logger = logging.getLogger('KQMLReader')
+logger = logging.getLogger(__name__)
+
 
 class KQMLReader(object):
     def __init__(self, reader):
