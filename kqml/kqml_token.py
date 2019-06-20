@@ -2,6 +2,7 @@ import re
 from kqml import KQMLObject
 from .util import safe_decode
 
+
 class KQMLToken(KQMLObject):
     def __init__(self, s=None):
         if s is None:
@@ -47,8 +48,8 @@ class KQMLToken(KQMLObject):
         return self.data.startswith(':')
 
     def parse_package(self):
-        g1 = re.match('([^:]+)::([^:]+)$', self.data)
-        g2 = re.match('([^:]+)::(\|[^\|]*\|)$', self.data)
+        g1 = re.match(r'([^:]+)::([^:]+)$', self.data)
+        g2 = re.match(r'([^:]+)::(\|[^\|]*\|)$', self.data)
         if g1:
             package, bare_name = g1.groups()
         elif g2:

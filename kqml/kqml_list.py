@@ -5,6 +5,7 @@ from .kqml_string import KQMLString
 import kqml.kqml_reader as kqml_reader
 from .util import safe_decode, safe_encode
 
+
 class KQMLList(KQMLObject):
     def __init__(self, objects=None):
         self.data = []
@@ -95,7 +96,6 @@ class KQMLList(KQMLObject):
         if param is not None:
             return safe_decode(param.string_value())
         return None
-
 
     def append(self, obj):
         """Append an element to the end of the list.

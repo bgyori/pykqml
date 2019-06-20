@@ -1,6 +1,7 @@
 from io import StringIO
 from kqml import KQMLObject
 
+
 class KQMLQuotation(KQMLObject):
     def __init__(self, quote_type, kqml_object):
         self.quote_type = quote_type

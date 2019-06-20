@@ -1,5 +1,5 @@
 import logging
-logger = logging.getLogger('KQMLDispatcher')
+logger = logging.getLogger(__name__)
 
 
 class KQMLDispatcher(object):
@@ -34,9 +34,6 @@ class KQMLDispatcher(object):
             logger.error('Value error during reading')
             logger.exception(e)
             return
-
-    def warn(self, msg):
-        logger.warning(msg)
 
     def shutdown(self):
         self.shutdown_initiated = True

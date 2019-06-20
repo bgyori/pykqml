@@ -7,7 +7,7 @@ from kqml import KQMLReader, KQMLDispatcher
 from kqml import KQMLList, KQMLPerformative
 from .kqml_exceptions import KQMLException
 
-logger = logging.getLogger('KQMLModule')
+logger = logging.getLogger(__name__)
 
 
 # On Windows, sockets need to be created via the msvcrt
