@@ -36,3 +36,7 @@ class KQMLExpectedListException(KQMLException):
 
 class KQMLExpectedWhitespaceException(KQMLException):
     pass
+
+
+class StopWaitingSignal(KQMLException):
+    pass
