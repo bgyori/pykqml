@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='pykqml',
-    version='1.2',
+    version='1.3',
     packages=['kqml'],
     keywords=['kqml', 'agent', 'nlp', 'communication', 'dialogue'],
     url='http://github.com/bgyori/pykqml',
