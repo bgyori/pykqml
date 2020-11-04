@@ -27,12 +27,12 @@ class KQMLPerformative(KQMLObject):
         while i < len(objects):
             if not isinstance(objects[i], KQMLToken) or objects[i][0] != ':':
                 raise KQMLBadPerformativeException('performative ' +
-                    'element not a keyword: ' + objects[i])
+                    'element not a keyword: ' + str(objects[i]))
             # Increment counter after keyword
             i += 1
             if i == len(objects):
                 raise KQMLBadPerformativeException('missing value ' +
-                    'for keyword: ' + objects[i-1])
+                    'for keyword: ' + str(objects[i-1]))
             i += 1
 
     def __len__(self):
